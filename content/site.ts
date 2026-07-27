@@ -14,7 +14,7 @@ export const site = {
   /** Used for canonical URLs, sitemap, Open Graph and structured data.
    *  No trailing slash. Must match the domain the site is actually served on,
    *  or search engines will see the canonical tags pointing somewhere else. */
-  url: 'https://larsassen.co.nz',
+  url: 'https://lars-assen.com',
 
   /** Appears in the footer, on the contact page and in structured data. */
   email: '[Email address]',

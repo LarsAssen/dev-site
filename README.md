@@ -30,15 +30,22 @@ Then open <http://localhost:3000>.
 
 ## Deploying
 
-The site is set up for **larsassen.co.nz on Netlify**. `netlify.toml` already
+The site is set up for **lars-assen.com on Netlify**. `netlify.toml` already
 holds the build command, publish directory, security headers and cache rules,
 so there is nothing to configure in the dashboard.
 
-**1. Register the domain.** `larsassen.co.nz` was confirmed available with the
-Domain Name Commission. Any NZ registrar works — roughly $25–40/year. Worth
-taking `larsassen.com` at the same time and redirecting it.
+**Before you start — the domain currently points at Squarespace.** Its DNS is
+managed at Porkbun, with an apex `A` record and a `www` CNAME both aimed at
+Squarespace. Nothing is published there (both return 404), so repointing takes
+nothing down. Two things to be careful of when you edit the records:
 
-**2. Push the repo.** It is committed locally on `main`. Create an empty repo on
+- **Keep the `TXT` record** `v=spf1 include:beehiiv.com ~all` if you still send
+  a newsletter from this domain. Deleting it will start sending your newsletter
+  to spam folders.
+- Replace only the `A` and `CNAME` records. There is no `MX` record, so no
+  email is affected.
+
+**1. Push the repo.** It is committed locally on `main`. Create an empty repo on
 GitHub, then:
 
 ```bash
@@ -49,15 +56,26 @@ git remote add origin https://github.com/YOUR-USERNAME/larsassen.git
 git push -u origin main
 ```
 
-**3. Connect Netlify.** Add new site → Import an existing project → pick the
+**2. Connect Netlify.** Add new site → Import an existing project → pick the
 repo. It reads `netlify.toml`, so leave the build settings alone. First deploy
-takes about a minute and gives you a `something.netlify.app` URL.
+takes about a minute and gives you a `something.netlify.app` URL. Check that URL
+works before touching any DNS.
 
-**4. Point the domain at it.** Netlify → Domain management → Add custom domain →
-`larsassen.co.nz`. Netlify shows the DNS records to set at your registrar. SSL
-is issued automatically once DNS resolves, usually within the hour.
+**3. Point the domain at it.** Netlify → Domain management → Add a domain →
+`lars-assen.com`, and set it as the primary domain so `www` redirects to the
+apex (which is what `site.url` says, so the canonical tags agree).
 
-**5. Switch the forms on.** In `content/site.ts`, change `formEndpoint` from the
+Then at Porkbun → Details → DNS, edit the records Netlify tells you to set.
+Porkbun supports `ALIAS` records, so prefer an `ALIAS` on the apex over an `A`
+record if Netlify offers both — it survives Netlify changing their IPs. Use
+whatever values the Netlify panel displays rather than any written here; they do
+change. Leave the beehiiv `TXT` record alone.
+
+SSL is issued automatically once DNS resolves. Usually under an hour, but
+Porkbun's TTL may make it longer — if Netlify still says "awaiting external DNS"
+after a couple of hours, re-check the records rather than re-adding the domain.
+
+**4. Switch the forms on.** In `content/site.ts`, change `formEndpoint` from the
 placeholder to `'/'`. Both forms already carry the markup Netlify's build-time
 detection looks for, so submissions appear under Forms in the dashboard. Add
 your email under Forms → Notifications. Send one test enquiry and confirm it
@@ -77,8 +95,8 @@ Everything below is a placeholder written as `[Something in square brackets]`.
 Search the project for `[` to find them all.
 
 1. **`content/site.ts`** — your email address, phone, LinkedIn. The domain is
-   already set to `https://larsassen.co.nz`; change it if you register a
-   different one, since the canonical tags and sitemap are built from it.
+   set to `https://lars-assen.com`; if that ever changes, update it here, since
+   the canonical tags, sitemap and Open Graph URLs are all built from it.
 2. **`content/site.ts` → `formEndpoint`** — see *Connecting the forms* below.
 3. **`app/privacy/page.tsx`** — name your host and analytics tool, and set the
    review date. Check it against the Privacy Act 2020.
