@@ -45,16 +45,14 @@ nothing down. Two things to be careful of when you edit the records:
 - Replace only the `A` and `CNAME` records. There is no `MX` record, so no
   email is affected.
 
-**1. Push the repo.** It is committed locally on `main`. Create an empty repo on
-GitHub, then:
+**1. Push the repo.** Done — the code is on `main` at
+<https://github.com/LarsAssen/dev-site>. Ongoing changes are just:
 
 ```bash
-git remote add origin https://github.com/YOUR-USERNAME/larsassen.git
+git push
 ```
 
-```bash
-git push -u origin main
-```
+Every push to `main` triggers a fresh Netlify deploy once step 2 is done.
 
 **2. Connect Netlify.** Add new site → Import an existing project → pick the
 repo. It reads `netlify.toml`, so leave the build settings alone. First deploy
