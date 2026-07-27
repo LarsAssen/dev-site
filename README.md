@@ -30,9 +30,44 @@ Then open <http://localhost:3000>.
 
 ## Deploying
 
-`npm run build` writes a complete static site to `out/`. Upload that folder, or
-point Netlify / Vercel / Cloudflare Pages at the repo with build command
-`npm run build` and publish directory `out`.
+The site is set up for **larsassen.co.nz on Netlify**. `netlify.toml` already
+holds the build command, publish directory, security headers and cache rules,
+so there is nothing to configure in the dashboard.
+
+**1. Register the domain.** `larsassen.co.nz` was confirmed available with the
+Domain Name Commission. Any NZ registrar works — roughly $25–40/year. Worth
+taking `larsassen.com` at the same time and redirecting it.
+
+**2. Push the repo.** It is committed locally on `main`. Create an empty repo on
+GitHub, then:
+
+```bash
+git remote add origin https://github.com/YOUR-USERNAME/larsassen.git
+```
+
+```bash
+git push -u origin main
+```
+
+**3. Connect Netlify.** Add new site → Import an existing project → pick the
+repo. It reads `netlify.toml`, so leave the build settings alone. First deploy
+takes about a minute and gives you a `something.netlify.app` URL.
+
+**4. Point the domain at it.** Netlify → Domain management → Add custom domain →
+`larsassen.co.nz`. Netlify shows the DNS records to set at your registrar. SSL
+is issued automatically once DNS resolves, usually within the hour.
+
+**5. Switch the forms on.** In `content/site.ts`, change `formEndpoint` from the
+placeholder to `'/'`. Both forms already carry the markup Netlify's build-time
+detection looks for, so submissions appear under Forms in the dashboard. Add
+your email under Forms → Notifications. Send one test enquiry and confirm it
+arrives before you start pointing people at the site.
+
+### Deploying somewhere else instead
+
+Vercel and Cloudflare Pages both work — build command `npm run build`, publish
+directory `out`. `public/_headers` covers Cloudflare, which does not read
+`netlify.toml`. On either, forms need a separate service; see below.
 
 ---
 
@@ -41,22 +76,29 @@ point Netlify / Vercel / Cloudflare Pages at the repo with build command
 Everything below is a placeholder written as `[Something in square brackets]`.
 Search the project for `[` to find them all.
 
-1. **`content/site.ts`** — your email address, domain, phone, LinkedIn.
+1. **`content/site.ts`** — your email address, phone, LinkedIn. The domain is
+   already set to `https://larsassen.co.nz`; change it if you register a
+   different one, since the canonical tags and sitemap are built from it.
 2. **`content/site.ts` → `formEndpoint`** — see *Connecting the forms* below.
-3. **`app/privacy/page.tsx`** — name your form service, host and analytics tool,
-   and set the review date. Check it against the Privacy Act 2020.
+3. **`app/privacy/page.tsx`** — name your host and analytics tool, and set the
+   review date. Check it against the Privacy Act 2020.
 4. **`content/faqs.ts`** — payment terms, and your freelance rates.
 5. **`app/opengraph-image.tsx`** — the social-sharing card. Fine as-is, but
    worth swapping for a real image once you have one.
 
 ### Connecting the forms
 
-Both enquiry forms POST to whatever URL is in `site.formEndpoint`. Any form
-service that accepts a form-data POST works — Formspree, Netlify Forms, Basin,
-Web3Forms. Create an endpoint, paste in the URL, done.
+Both enquiry forms POST a urlencoded body to whatever is in
+`site.formEndpoint`.
 
-Until you do, the forms still validate properly and then tell the visitor to
-email you directly, rather than silently swallowing the message.
+- **On Netlify:** set it to `'/'`. Nothing else — the forms already carry
+  `data-netlify`, a `form-name` field and a honeypot, so Netlify registers them
+  at build time and collects submissions itself.
+- **Anywhere else:** paste an endpoint from Formspree, Basin, Web3Forms or
+  similar.
+
+Until you do either, the forms still validate properly and then tell the visitor
+to email you directly, rather than silently swallowing the message.
 
 ---
 
