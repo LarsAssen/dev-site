@@ -1,0 +1,13 @@
+# Normalise line endings so the repo stays consistent regardless of the OS
+# it is cloned on. Prevents spurious whole-file diffs between Windows and the
+# Linux build machine your host runs.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

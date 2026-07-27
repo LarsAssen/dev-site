@@ -1,0 +1,214 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   TERRAIN DESIGN TOKENS
+   Derived from the Terrain Brand System v1.0.
+   Every colour, typeface and spacing value used on this site should resolve
+   back to a token declared here. Change a value here and it updates sitewide.
+   ========================================================================== */
+
+@theme {
+  /* --- Core palette (six brand colours, unchanged from the brand system) --- */
+  --color-midnight: #1b2d42; /* hero backgrounds, high-impact moments */
+  --color-dusk: #2e3e54; /* secondary dark, panels, tiles */
+  --color-canopy: #3d5a42; /* accent bands, nature reference */
+  --color-ember: #b85c2c; /* accent only — lines, pips, single highlights */
+  --color-dawn: #d89468; /* text on dark, soft highlights */
+  --color-linen: #e6ddd0; /* light surfaces, text on dark, paper feel */
+
+  /* --- Derived tones ---
+     The brand system references a "sand" colour for dashed dividers and data
+     bars without giving a hex value, and the six core colours alone do not
+     cover every accessible text pairing needed on the web. These four are
+     derived from the palette and exist only to meet WCAG AA contrast. */
+  --color-sand: #c9bba6; /* dashed rules, hairlines on light surfaces */
+  --color-ink: #1b2d42; /* body text on light — same as Midnight, 10.4:1 */
+  --color-ink-muted: #4e5a69; /* secondary text on light — 5.2:1 on Linen */
+  --color-mist: #adb4be; /* secondary text on dark — 6.7:1 on Midnight */
+
+  /* Ember at full strength is a 3.4:1 pairing with Linen, which is below the
+     4.5:1 minimum for text. These two darkened steps carry any Ember-coloured
+     text and the primary button surface. True Ember is kept for the accent
+     line, rules and focus rings, where only 3:1 is required. */
+  --color-ember-deep: #8f4520; /* text on light 5.6:1 · button fill 4.9:1 */
+  --color-ember-deeper: #7a3a1b; /* primary button hover — 6.4:1 with Linen */
+
+  /* Dawn reaches only 4.3:1 on Dusk, so small text uses this lightened step:
+     4.9:1 on Dusk and 6.3:1 on Midnight. Dawn itself is kept for larger text. */
+  --color-dawn-bright: #e0a075;
+
+  /* --- Surfaces --- */
+  --color-paper: #f2ece4; /* page background, one step lighter than Linen */
+  --color-paper-sunk: #e6ddd0; /* recessed panels on light backgrounds */
+  --color-hairline: #d7cbb9; /* borders on light surfaces */
+  --color-hairline-dark: #3d4c60; /* borders on dark surfaces */
+
+  /* --- Typography ---
+     Playfair Display: display only, sentence case, one line per view.
+     DM Sans: all body, UI and interface text.
+     DM Mono: labels, numerals and eyebrows — always tracked out, always caps. */
+  --font-display: var(--font-playfair), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, 'Cascadia Mono', Menlo,
+    monospace;
+
+  /* --- Spacing rhythm ---
+     Section padding steps, used by the Section component. */
+  --spacing-section: 5rem;
+  --spacing-section-lg: 7.5rem;
+
+  /* --- Motion ---
+     Deliberately minimal: colour and border transitions only. */
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Stops sticky-header overlap when jumping to an in-page anchor. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Display type is set in Playfair at weight 500 only. The brand system
+     forbids all-caps Playfair and more than one display line per view. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* A single, consistent focus ring everywhere. Ember reads clearly against
+     both the light and the dark surfaces used on this site. */
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Remove the default marker so the FAQ chevron can be positioned freely. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  ::selection {
+    background-color: var(--color-ember);
+    color: var(--color-linen);
+  }
+}
+
+/* ==========================================================================
+   COMPONENT UTILITIES
+   ========================================================================== */
+
+@layer components {
+  /* The brand's most recognisable element: an 80 x 4px Ember bar that
+     precedes section headings. */
+  .accent-line {
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: var(--color-ember);
+    border-radius: 1px;
+  }
+
+  /* Mono labels are always uppercase and tracked out (+100 to +140), which is
+     what makes them read as data rather than decoration. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* 1px rule with a 6px dash pattern, used to separate content blocks. */
+  .dashed-rule {
+    height: 1px;
+    width: 100%;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--color-sand) 0,
+      var(--color-sand) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+
+  .dashed-rule-dark {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--color-hairline-dark) 0,
+      var(--color-hairline-dark) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+
+  /* Constrains body copy to a comfortable measure (~68 characters). */
+  .measure {
+    max-width: 62ch;
+  }
+
+  .measure-tight {
+    max-width: 48ch;
+  }
+}
+
+/* ==========================================================================
+   MOTION PREFERENCES
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
