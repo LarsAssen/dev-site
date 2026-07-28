@@ -2,15 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { FreelanceEnquiryForm } from '@/components/forms/FreelanceEnquiryForm'
+import { PageHero } from '@/components/layout/PageHero'
 import { ArrowRight, Button } from '@/components/ui/Button'
 import { Faq } from '@/components/ui/Faq'
 import { Section } from '@/components/ui/Section'
-import {
-  AccentLine,
-  DashedDivider,
-  Eyebrow,
-  SectionHeading,
-} from '@/components/ui/brand'
+import { DashedDivider, Eyebrow, SectionHeading } from '@/components/ui/brand'
 import { ExclusionList } from '@/components/ui/lists'
 import { engagementModels, freelanceExclusions, freelanceServices } from '@/content/audience'
 import { freelanceFaqs } from '@/content/faqs'
@@ -62,44 +58,34 @@ export default function FreelanceSupportPage() {
    -------------------------------------------------------------------------- */
 function Hero() {
   return (
-    <section className="bg-dusk text-linen">
-      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pb-24 sm:pt-24">
-        <AccentLine />
-        <Eyebrow tone="dark" className="mt-5 block">
-          For agencies, designers &amp; small teams
-        </Eyebrow>
-
-        <h1 className="mt-6 max-w-[20ch] text-[2.25rem] leading-[1.1] sm:text-5xl">
-          Flexible website development support for agencies and small teams.
-        </h1>
-
-        <p className="mt-8 measure text-lg text-mist">
-          Available for selected project-based, subcontract and part-time
-          website engagements.
-        </p>
-
-        <div className="mt-10">
-          <Button href="#freelance-enquiry" variant="onDark" size="lg">
-            Send a project brief
-            <ArrowRight />
-          </Button>
-        </div>
-
-        <DashedDivider tone="dark" className="mt-14" />
-
-        <p className="mt-6 measure text-sm text-mist">
-          Running a small business and looking for a website of your own? That
-          is my main service and it lives{' '}
-          <Link
-            href="/website-builds/"
-            className="text-dawn-bright underline underline-offset-4 transition-colors duration-200 hover:text-linen"
-          >
-            on the website builds page
-          </Link>
-          .
-        </p>
+    <PageHero
+      breadcrumb="Freelance support"
+      eyebrow="For agencies, designers & small teams"
+      title="Flexible website development support for agencies and small teams."
+      lead="Available for selected project-based, subcontract and part-time website engagements."
+      tone="dusk"
+    >
+      <div className="mt-8">
+        <Button href="#freelance-enquiry" variant="onDark" size="lg">
+          Send a project brief
+          <ArrowRight />
+        </Button>
       </div>
-    </section>
+
+      <DashedDivider tone="dark" className="mt-12" />
+
+      <p className="mt-6 measure text-sm text-mist">
+        Running a small business and looking for a website of your own? That is
+        my main service and it lives{' '}
+        <Link
+          href="/website-builds/"
+          className="text-dawn-bright underline underline-offset-4 transition-colors duration-200 hover:text-linen"
+        >
+          on the website builds page
+        </Link>
+        .
+      </p>
+    </PageHero>
   )
 }
 

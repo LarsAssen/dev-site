@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 
+import { PageHero } from '@/components/layout/PageHero'
 import { EarlyClientPanel } from '@/components/sections/WorkSection'
 import { Section } from '@/components/ui/Section'
 import {
   AccentLine,
   DashedDivider,
-  Eyebrow,
   NumberedBadge,
 } from '@/components/ui/brand'
 import { ProjectGrid } from '@/components/work/ProjectCard'
@@ -50,24 +50,21 @@ export default function WorkPage() {
 
   return (
     <>
-      <section className="bg-midnight text-linen">
-        <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pb-24 sm:pt-24">
-          <AccentLine />
-          <Eyebrow tone="dark" className="mt-5 block">
-            Work
-          </Eyebrow>
-          <h1 className="mt-6 max-w-[18ch] text-[2.25rem] leading-[1.1] sm:text-5xl">
-            {hasProjects
-              ? 'Selected website projects.'
-              : 'Work is being added here.'}
-          </h1>
-          <p className="mt-8 measure text-lg text-mist">
-            {hasProjects
-              ? 'Each case study explains the challenge, my role, the decisions made and the final outcome.'
-              : 'I am currently building the first collection of work for this focused website service. New projects and detailed case studies will be added here as they are completed.'}
-          </p>
-        </div>
-      </section>
+      <PageHero
+        breadcrumb="Work"
+        eyebrow="Work"
+        title={
+          hasProjects
+            ? 'Selected website projects.'
+            : 'Work is being added here.'
+        }
+        titleClassName="max-w-[18ch]"
+        lead={
+          hasProjects
+            ? 'Each case study explains the challenge, my role, the decisions made and the final outcome.'
+            : 'I am currently building the first collection of work for this focused website service. New projects and detailed case studies will be added here as they are completed.'
+        }
+      />
 
       {hasProjects ? (
         <Section size="lg">

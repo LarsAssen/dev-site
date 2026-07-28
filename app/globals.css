@@ -185,6 +185,29 @@
     );
   }
 
+  /* Route-change fade. See components/layout/PageTransition.tsx.
+     180ms is long enough to register and short enough not to feel like a
+     wait. Opacity only — nothing moves.
+
+     The explicit `opacity: 1` base with no fill mode is deliberate. It means
+     the element is opaque whenever the animation is not actively running, so
+     if the animation is ever cancelled or unsupported the page is still
+     visible. Using `both` instead would tie visibility to the animation
+     completing, and a blank page is a far worse failure than a missing fade. */
+  .page-transition {
+    opacity: 1;
+    animation: page-fade-in 180ms var(--ease-out-soft);
+  }
+
+  @keyframes page-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   /* Constrains body copy to a comfortable measure (~68 characters). */
   .measure {
     max-width: 62ch;
@@ -210,5 +233,12 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* Belt and braces: make sure the route fade cannot leave content hidden
+     when animations are effectively disabled above. */
+  .page-transition {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }

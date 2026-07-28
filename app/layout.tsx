@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { DM_Mono, DM_Sans, Playfair_Display } from 'next/font/google'
 
+import { PageTransition } from '@/components/layout/PageTransition'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SkipLink } from '@/components/layout/SkipLink'
@@ -89,7 +90,7 @@ export default function RootLayout({
         <SkipLink />
         <SiteHeader />
         <main id="main" className="flex-1">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
         <SiteFooter />
         {/* Sitewide structured data. Page-specific schema is added per page. */}

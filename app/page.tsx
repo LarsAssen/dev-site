@@ -17,9 +17,9 @@ import {
   SectionHeading,
 } from '@/components/ui/brand'
 import { CheckList } from '@/components/ui/lists'
-import { clientTypes, goodFitWhen } from '@/content/audience'
-import { generalFaqs } from '@/content/faqs'
-import { launchPackage, problems, websiteJobs } from '@/content/offer'
+import { clientTypes } from '@/content/audience'
+import { homepageFaqs } from '@/content/faqs'
+import { homepageProblems, launchPackage, websiteJobs } from '@/content/offer'
 import { formatPrice, site } from '@/content/site'
 import { faqSchema } from '@/lib/schema'
 
@@ -41,7 +41,7 @@ export default function HomePage() {
       <ProblemSection />
       <OfferSection />
       <AudienceSection />
-      <ProcessSection />
+      <ProcessSection variant="compact" />
       <WorkingTogetherSection />
       <WorkSection />
       <FreelanceTeaser />
@@ -51,7 +51,7 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema(generalFaqs, '/')),
+          __html: JSON.stringify(faqSchema(homepageFaqs, '/')),
         }}
       />
     </>
@@ -158,8 +158,10 @@ function ProblemSection() {
       <DashedDivider className="my-16" />
 
       <h3 className="text-xl font-medium">What usually gets in the way</h3>
+      {/* Three of the six. The rest are on the Website Builds page, which this
+          links to — the homepage summarises, the sales page convinces. */}
       <div className="mt-8 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-        {problems.map((problem) => (
+        {homepageProblems.map((problem) => (
           <div key={problem.title}>
             <span aria-hidden="true" className="block h-px w-8 bg-ember" />
             <h4 className="mt-4 text-lg">{problem.title}</h4>
@@ -167,6 +169,14 @@ function ProblemSection() {
           </div>
         ))}
       </div>
+
+      <Link
+        href="/website-builds/#problems-title"
+        className="mt-9 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+      >
+        See the rest of what this fixes
+        <ArrowRight />
+      </Link>
     </Section>
   )
 }
@@ -252,19 +262,24 @@ function AudienceSection() {
         lead="I work with people who sell their time, expertise or craft. That focus is deliberate — a narrow service means fewer surprises and better decisions."
       />
 
-      <div className="mt-12 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Labels only here. The descriptions and the qualifying checklist are
+          on the Website Builds page, where someone is actually deciding. */}
+      <ul className="mt-12 grid gap-x-12 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
         {clientTypes.map((type) => (
-          <div key={type.label}>
-            <h3 className="text-lg">{type.label}</h3>
-            <p className="mt-2 text-ink-muted">{type.body}</p>
-          </div>
+          <li key={type.label} className="flex items-start gap-3">
+            <span aria-hidden="true" className="mt-3 h-px w-5 shrink-0 bg-ember" />
+            <span className="text-lg text-ink">{type.label}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="mt-14 rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-10">
-        <h3 className="eyebrow text-ember-deep">This is a good fit when…</h3>
-        <CheckList items={goodFitWhen} columns={2} className="mt-6" />
-      </div>
+      <Link
+        href="/website-builds/#suitable-title"
+        className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+      >
+        Check whether your project is a good fit
+        <ArrowRight />
+      </Link>
     </Section>
   )
 }
@@ -389,12 +404,13 @@ function FaqSection() {
             href="/website-builds/#faq"
             className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
           >
-            More about pricing and scope
+            All questions, pricing and scope
             <ArrowRight />
           </Link>
         </div>
 
-        <Faq items={generalFaqs} />
+        {/* Four questions, not ten. The full set is on Website Builds. */}
+        <Faq items={homepageFaqs} />
       </div>
     </Section>
   )

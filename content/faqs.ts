@@ -58,6 +58,18 @@ export const generalFaqs: FaqEntry[] = [
   },
 ]
 
+/**
+ * The four questions shown on the homepage — the ones people ask before they
+ * are convinced, rather than the ones they ask once they are. The full set
+ * lives on the Website Builds page, which the homepage links to.
+ */
+export const homepageFaqs: FaqEntry[] = [
+  generalFaqs[0], // Do I need all my content ready?
+  generalFaqs[1], // How long does a website take?
+  generalFaqs[3], // Can you improve an existing website?
+  generalFaqs[5], // Are hosting and domain costs included?
+]
+
 export const pricingFaqs: FaqEntry[] = [
   {
     question: 'Why is founding-client pricing lower?',

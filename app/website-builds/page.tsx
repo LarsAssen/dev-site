@@ -2,19 +2,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { ProjectEnquiryForm } from '@/components/forms/ProjectEnquiryForm'
+import { PageHero } from '@/components/layout/PageHero'
 import { FreelanceTeaser } from '@/components/sections/FreelanceTeaser'
 import { ProcessSection } from '@/components/sections/ProcessSection'
 import { ArrowRight, Button } from '@/components/ui/Button'
 import { Faq } from '@/components/ui/Faq'
 import { Section } from '@/components/ui/Section'
-import {
-  AccentLine,
-  DashedDivider,
-  ElevationLine,
-  Eyebrow,
-  Pill,
-  SectionHeading,
-} from '@/components/ui/brand'
+import { DashedDivider, Pill, SectionHeading } from '@/components/ui/brand'
 import { CheckList, ExclusionList, RuleList } from '@/components/ui/lists'
 import { clientTypes, goodFitWhen, notAGoodFitWhen } from '@/content/audience'
 import { generalFaqs, pricingFaqs } from '@/content/faqs'
@@ -73,43 +67,27 @@ export default function WebsiteBuildsPage() {
 /* -------------------------------------------------------------------------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-midnight text-linen">
-      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
-        <AccentLine />
-        <Eyebrow tone="dark" className="mt-5 block">
-          {launchPackage.name}
-        </Eyebrow>
-
-        <h1 className="mt-6 max-w-[19ch] text-[2.25rem] leading-[1.1] sm:text-5xl lg:text-6xl">
-          A professional website that makes your business easier to understand
-          and contact.
-        </h1>
-
-        <p className="mt-8 measure text-lg text-mist">
-          I plan, design and build clear service-business websites without the
-          drawn-out process, unnecessary complexity or confusing technical
-          language.
-        </p>
-
-        <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-7">
-          <Button href="#enquiry" size="lg">
-            Discuss your website
-            <ArrowRight />
-          </Button>
-          <Link
-            href="#included"
-            className="text-sm text-linen underline decoration-linen/35 underline-offset-4 transition-colors duration-200 hover:decoration-dawn"
-          >
-            See what is included
-          </Link>
-        </div>
+    <PageHero
+      breadcrumb="Website builds"
+      eyebrow={launchPackage.name}
+      title="A professional website that makes your business easier to understand and contact."
+      titleClassName="max-w-[19ch]"
+      lead="I plan, design and build clear service-business websites without the drawn-out process, unnecessary complexity or confusing technical language."
+      showElevationLine
+    >
+      <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-7">
+        <Button href="#enquiry" size="lg">
+          Discuss your website
+          <ArrowRight />
+        </Button>
+        <Link
+          href="#included"
+          className="text-sm text-linen underline decoration-linen/35 underline-offset-4 transition-colors duration-200 hover:decoration-dawn"
+        >
+          See what is included
+        </Link>
       </div>
-
-      <ElevationLine
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-20 w-full opacity-[0.16]"
-        strokeClassName="text-dawn"
-      />
-    </section>
+    </PageHero>
   )
 }
 

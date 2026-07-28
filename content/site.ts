@@ -17,7 +17,7 @@ export const site = {
   url: 'https://lars-assen.com',
 
   /** Appears in the footer, on the contact page and in structured data. */
-  email: '[Email address]',
+  email: 'juniorassen@hotmail.com',
 
   /** Optional. Leave as-is to hide the phone line from the contact page. */
   phone: '[Phone number, optional]',

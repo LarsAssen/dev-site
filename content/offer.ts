@@ -162,6 +162,20 @@ export const problems = [
   },
 ] as const
 
+/**
+ * The three problems shown on the homepage. The full six appear on the
+ * Website Builds page.
+ *
+ * The homepage summarises and routes; Website Builds does the convincing.
+ * Keeping this list short is what stops the two pages reading as the same
+ * page twice. If you swap one out, take one out too — three is the point.
+ */
+export const homepageProblems = [
+  problems[0], // The website is out of date
+  problems[1], // Nobody can tell what you offer
+  problems[3], // There is no obvious way to get in touch
+] as const
+
 /** What visitors should be able to work out quickly on any good website. */
 export const websiteJobs = [
   'What the business offers',

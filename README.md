@@ -178,6 +178,22 @@ is the requirement.
 Fonts are self-hosted at build time via `next/font`, so no request goes to
 Google when someone loads the site.
 
+### Page depth, and why the homepage is short
+
+The homepage summarises and routes; Website Builds convinces. That split is
+deliberate and easy to undo by accident.
+
+Three content selections exist purely to enforce it — `homepageProblems` in
+`content/offer.ts`, `homepageFaqs` in `content/faqs.ts`, and the `compact`
+variant of `ProcessSection`. Each shows a subset and links to the full version.
+If you swap the homepage back to the full arrays, roughly half of it becomes a
+word-for-word repeat of the sales page, which is what made the site feel like a
+single-page site cut into pieces.
+
+The homepage is also the only page with the tall hero and the facts row.
+Everything else uses the shorter `PageHero`. That contrast is what tells someone
+whether they are at the front door or in a room.
+
 ### Hierarchy rules to preserve
 
 The site sells one thing. If you change the layout, keep these intact:
@@ -196,10 +212,12 @@ The site sells one thing. If you change the layout, keep these intact:
 
 Checked and currently passing:
 
-- Every text/background pairing across all seven pages meets WCAG AA (864 text
+- Every text/background pairing across all seven pages meets WCAG AA (843 text
   nodes verified — 4.5:1 body, 3:1 large text).
 - One `<h1>` per page, headings in order, no skipped levels.
-- Skip link, `<main>` landmark, labelled navigation regions.
+- Skip link, `<main>` landmark, labelled navigation regions, and a breadcrumb
+  on every page except the homepage with the current page marked
+  `aria-current="page"`.
 - Every form control has a real `<label>`; errors are tied to their field with
   `aria-describedby` and announced via `role="alert"`.
 - Mobile menu is keyboard operable, closes on Escape and returns focus.

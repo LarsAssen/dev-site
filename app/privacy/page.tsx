@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { PageHero } from '@/components/layout/PageHero'
 import { Section } from '@/components/ui/Section'
-import { AccentLine, DashedDivider, Eyebrow } from '@/components/ui/brand'
+import { DashedDivider } from '@/components/ui/brand'
 import { isPlaceholder, site } from '@/content/site'
 
 export const metadata: Metadata = {
@@ -27,17 +28,11 @@ export default function PrivacyPage() {
 
   return (
     <>
-      <section className="bg-midnight text-linen">
-        <div className="mx-auto w-full max-w-6xl px-5 pb-16 pt-16 sm:px-8 sm:pb-20 sm:pt-24">
-          <AccentLine />
-          <Eyebrow tone="dark" className="mt-5 block">
-            Privacy
-          </Eyebrow>
-          <h1 className="mt-6 max-w-[20ch] text-[2.25rem] leading-[1.1] sm:text-5xl">
-            What this website collects, and why.
-          </h1>
-        </div>
-      </section>
+      <PageHero
+        breadcrumb="Privacy"
+        eyebrow="Privacy"
+        title="What this website collects, and why."
+      />
 
       <Section size="lg">
         <div className="max-w-2xl">

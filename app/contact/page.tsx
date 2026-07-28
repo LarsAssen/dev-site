@@ -2,13 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { ProjectEnquiryForm } from '@/components/forms/ProjectEnquiryForm'
+import { PageHero } from '@/components/layout/PageHero'
 import { Section } from '@/components/ui/Section'
-import {
-  AccentLine,
-  DashedDivider,
-  Eyebrow,
-  NumberedBadge,
-} from '@/components/ui/brand'
+import { DashedDivider, NumberedBadge } from '@/components/ui/brand'
 import { isPlaceholder, site } from '@/content/site'
 import { breadcrumbSchema } from '@/lib/schema'
 
@@ -42,21 +38,13 @@ const whatHappensNext = [
 export default function ContactPage() {
   return (
     <>
-      <section className="bg-midnight text-linen">
-        <div className="mx-auto w-full max-w-6xl px-5 pb-16 pt-16 sm:px-8 sm:pb-20 sm:pt-24">
-          <AccentLine />
-          <Eyebrow tone="dark" className="mt-5 block">
-            Contact
-          </Eyebrow>
-          <h1 className="mt-6 max-w-[18ch] text-[2.25rem] leading-[1.1] sm:text-5xl">
-            Tell me about your website project.
-          </h1>
-          <p className="mt-8 measure text-lg text-mist">
-            The form below is the fastest route. It asks for the things I need
-            in order to give you a useful answer rather than a vague one.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        breadcrumb="Contact"
+        eyebrow="Contact"
+        title="Tell me about your website project."
+        titleClassName="max-w-[18ch]"
+        lead="The form below is the fastest route. It asks for the things I need in order to give you a useful answer rather than a vague one."
+      />
 
       <Section size="lg">
         <div className="grid gap-14 lg:grid-cols-[1fr_1.5fr] lg:gap-20">

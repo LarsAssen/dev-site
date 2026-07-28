@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
 
+import { PageHero } from '@/components/layout/PageHero'
 import { ArrowRight, Button } from '@/components/ui/Button'
 import { Section } from '@/components/ui/Section'
 import {
   AccentLine,
   DashedDivider,
-  ElevationLine,
-  Eyebrow,
   SectionHeading,
 } from '@/components/ui/brand'
 import { RuleList } from '@/components/ui/lists'
@@ -92,29 +91,19 @@ export default function AboutPage() {
 /* -------------------------------------------------------------------------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-midnight text-linen">
-      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pb-24 sm:pt-24">
-        <AccentLine />
-        <Eyebrow tone="dark" className="mt-5 block">
-          About
-        </Eyebrow>
-
-        <h1 className="mt-6 max-w-[20ch] text-[2.25rem] leading-[1.1] sm:text-5xl">
-          I am Lars, a website designer and developer.
-        </h1>
-
-        <p className="mt-8 measure text-lg text-mist">
+    <PageHero
+      breadcrumb="About"
+      eyebrow="About"
+      title="I am Lars, a website designer and developer."
+      lead={
+        <>
           I am based in the {site.location.region} of {site.location.country}. I
           build clear websites for service businesses, and provide selected
           development support to agencies and small teams.
-        </p>
-      </div>
-
-      <ElevationLine
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-20 w-full opacity-[0.16]"
-        strokeClassName="text-dawn"
-      />
-    </section>
+        </>
+      }
+      showElevationLine
+    />
   )
 }
 
