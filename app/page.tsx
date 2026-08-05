@@ -17,20 +17,25 @@ import {
   SectionHeading,
 } from '@/components/ui/brand'
 import { CheckList } from '@/components/ui/lists'
-import { clientTypes } from '@/content/audience'
+import { audiencePositioning, clientTypes, currentFocus } from '@/content/audience'
 import { homepageFaqs } from '@/content/faqs'
-import { homepageProblems, launchPackage, websiteJobs } from '@/content/offer'
-import { formatPrice, site } from '@/content/site'
+import {
+  completePackage,
+  developerLed,
+  homepageProblems,
+  websiteJobs,
+} from '@/content/offer'
+import { currentPackagePrice, formatPrice, site } from '@/content/site'
 import { faqSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
   // `absolute` because the root layout's title template does not apply to
   // metadata declared in the same route segment.
   title: {
-    absolute: 'Lars Assen — Clear, modern websites for service businesses',
+    absolute: 'Web design for service businesses — Lars Assen',
   },
   description:
-    'I design and build clear, modern websites for small service businesses and independent professionals. Complete projects from NZD $1,500, based in the Wellington region.',
+    'Clear, professional website design and development for established service businesses and independent professionals. Based in the Wellington region and available across New Zealand.',
   alternates: { canonical: '/' },
 }
 
@@ -41,6 +46,7 @@ export default function HomePage() {
       <ProblemSection />
       <OfferSection />
       <AudienceSection />
+      <DeveloperLedSection />
       <ProcessSection variant="compact" />
       <WorkingTogetherSection />
       <WorkSection />
@@ -73,13 +79,18 @@ function Hero() {
         </Eyebrow>
 
         <h1 className="mt-6 max-w-[16ch] text-[2.5rem] leading-[1.08] sm:text-6xl lg:text-7xl">
-          Clear, modern websites for service businesses.
+          Clear, professional websites for service businesses.
         </h1>
 
         <p className="mt-8 measure text-lg text-mist sm:text-xl">
-          I design and build straightforward websites for small service
-          businesses and independent professionals who need a clearer, stronger
-          online presence.
+          I design and build straightforward, developer-led websites for
+          established service businesses and independent professionals who need
+          a clearer, stronger online presence.
+        </p>
+
+        <p className="mt-4 measure text-mist">
+          Based in the {site.location.region} and available for projects across{' '}
+          {site.location.country}.
         </p>
 
         <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-7">
@@ -97,14 +108,19 @@ function Hero() {
 
         <DashedDivider tone="dark" className="mt-16" />
 
-        {/* Three plain facts, not claims. Mono numerals read as data. */}
-        <dl className="mt-8 grid gap-8 sm:grid-cols-3">
+        {/* Four plain facts, not claims. Mono numerals read as data. */}
+        <dl className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <HeroFact term="The offer" detail={completePackage.name} />
           <HeroFact
-            term="Complete projects from"
-            detail={formatPrice(site.pricing.launchPackageFrom)}
+            term={
+              site.pricing.foundingClientPricing
+                ? 'Founding-client price'
+                : 'Package price'
+            }
+            detail={formatPrice(currentPackagePrice())}
           />
           <HeroFact term="Typical timeline" detail="3 to 5 weeks" />
-          <HeroFact term="Working with" detail="One person, start to finish" />
+          <HeroFact term="Developer-led" detail="Planning through to launch" />
         </dl>
       </div>
 
@@ -190,43 +206,55 @@ function OfferSection() {
     <Section tone="sunk" size="lg" id="offer" aria-labelledby="offer-title">
       <SectionHeading
         id="offer-title"
-        eyebrow={launchPackage.name}
-        title="Everything you need for a clear, professional service-business website."
-        lead={launchPackage.summary}
+        eyebrow={completePackage.name}
+        title="Everything needed for a clear, professional service-business website."
+        lead={completePackage.summary}
       />
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-12">
         <div className="rounded-sm border border-hairline bg-paper p-7 sm:p-10">
           <h3 className="eyebrow text-ember-deep">What is included</h3>
           <CheckList
-            items={launchPackage.highlights}
+            items={completePackage.highlights}
             columns={2}
             className="mt-6"
           />
         </div>
 
-        {/* Pricing panel. Transparent, and honest about what sits outside it. */}
+        {/* Pricing panel. The six facts someone needs before clicking through:
+            both prices, timeline, pages, revisions and the payment split. */}
         <div className="flex flex-col rounded-sm bg-midnight p-7 text-linen sm:p-10">
           {site.pricing.foundingClientPricing ? (
-            <Pill className="self-start">Founding client pricing</Pill>
+            <Pill className="self-start">Founding-client price</Pill>
           ) : null}
 
           <p className="mt-6 font-display text-4xl leading-none">
-            From {formatPrice(site.pricing.launchPackageFrom)}
+            {formatPrice(currentPackagePrice())}
           </p>
-          <p className="mt-4 text-mist">
-            {site.pricing.foundingClientPricing
-              ? 'This rate is available for a limited number of early projects while I build the portfolio and refine the delivery process. You get a fixed price in writing before any work starts.'
-              : 'You get a fixed price in writing before any work starts. The number you agree is the number you pay.'}
-          </p>
+          {site.pricing.foundingClientPricing ? (
+            <p className="mt-4 text-mist">
+              For the first {site.pricing.foundingClientProjects} suitable
+              projects. The standard package price afterwards will be{' '}
+              {formatPrice(site.pricing.standardPackagePrice)}.
+            </p>
+          ) : (
+            <p className="mt-4 text-mist">
+              A fixed price for the defined package, agreed in writing before
+              any work starts.
+            </p>
+          )}
 
           <DashedDivider tone="dark" className="my-6" />
 
-          <p className="text-sm text-mist">
-            Third-party costs are separate and billed to you directly by the
-            provider: hosting, domain registration, premium software and any
-            paid integrations. You own all of them outright.
-          </p>
+          <dl className="space-y-3 text-sm">
+            <PackageFact term="Timeline" detail="3 to 5 weeks" />
+            <PackageFact term="Pages" detail="Up to six core pages" />
+            <PackageFact term="Revisions" detail="Two structured rounds" />
+            <PackageFact
+              term="Payment"
+              detail="50% before work, 50% before launch"
+            />
+          </dl>
 
           <Button
             href="/contact/"
@@ -245,7 +273,29 @@ function OfferSection() {
           </Link>
         </div>
       </div>
+
+      {/* One line only. The full care plan lives on the Website Builds page. */}
+      <p className="mt-8 text-sm text-ink-muted">
+        Optional website care is available after launch from{' '}
+        {formatPrice(site.pricing.carePlanMonthly)} per month.{' '}
+        <Link
+          href="/website-builds/#care-plan"
+          className="text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+        >
+          See what it covers
+        </Link>
+        .
+      </p>
     </Section>
+  )
+}
+
+function PackageFact({ term, detail }: { term: string; detail: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <dt className="eyebrow shrink-0 text-dawn-bright">{term}</dt>
+      <dd className="text-right text-mist">{detail}</dd>
+    </div>
   )
 }
 
@@ -258,8 +308,8 @@ function AudienceSection() {
       <SectionHeading
         id="audience-title"
         eyebrow="Who this is for"
-        title="Small service businesses and independent professionals."
-        lead="I work with people who sell their time, expertise or craft. That focus is deliberate — a narrow service means fewer surprises and better decisions."
+        title="Established service businesses and independent professionals."
+        lead={audiencePositioning}
       />
 
       {/* Labels only here. The descriptions and the qualifying checklist are
@@ -273,13 +323,54 @@ function AudienceSection() {
         ))}
       </ul>
 
+      {/* The current focus, kept quieter than the broad positioning above. */}
+      <p className="mt-10 measure text-sm text-ink-muted">{currentFocus}</p>
+
       <Link
         href="/website-builds/#suitable-title"
-        className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+        className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
       >
         Check whether your project is a good fit
         <ArrowRight />
       </Link>
+    </Section>
+  )
+}
+
+/* --------------------------------------------------------------------------
+   5. DEVELOPER-LED
+   The commercial point of difference, stated without comparing myself to
+   anyone else. Kept to the same two-column shape used elsewhere so it does
+   not unbalance the page.
+   -------------------------------------------------------------------------- */
+function DeveloperLedSection() {
+  return (
+    <Section tone="sunk" size="lg" aria-labelledby="developer-title">
+      <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+        <SectionHeading
+          id="developer-title"
+          eyebrow={developerLed.eyebrow}
+          title={developerLed.title}
+        />
+
+        <div className="space-y-5">
+          {developerLed.body.map((paragraph) => (
+            <p key={paragraph} className="measure text-lg text-ink-muted">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-14 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
+        {developerLed.points.map((point) => (
+          <div key={point.title}>
+            <span aria-hidden="true" className="block h-px w-8 bg-ember" />
+            <h3 className="mt-4 text-lg">{point.title}</h3>
+            <p className="mt-2 text-ink-muted">{point.body}</p>
+          </div>
+        ))}
+      </div>
     </Section>
   )
 }
@@ -295,7 +386,7 @@ const workingPrinciples = [
   },
   {
     title: 'The scope is written down',
-    body: 'Pages, inclusions, revisions and price are agreed before anything starts. If a request falls outside it, I tell you before I act on it, not after.',
+    body: 'Pages, inclusions, revision rounds, payment schedule and price are agreed in writing before anything starts. If a request falls outside it, I tell you before I act on it, not after.',
   },
   {
     title: 'Mobile is designed first',
@@ -357,17 +448,17 @@ function AboutPreview() {
 
         <div>
           <p className="measure text-lg text-linen">
-            I am a website designer and developer based in the{' '}
+            I am a website designer and software developer based in the{' '}
             {site.location.region} of {site.location.country}. I help service
             businesses turn scattered ideas and outdated websites into clear,
             professional online experiences.
           </p>
           <p className="mt-5 measure text-mist">
-            My background is a mix of building and running things online:
-            websites and digital platforms, online business, technical
-            problem-solving, project coordination and remote collaboration
-            across time zones. That combination is why I tend to start with
-            structure and decisions rather than with visuals.
+            My background combines professional software development with
+            hands-on work on websites and digital platforms, alongside project
+            coordination and remote collaboration across time zones. That
+            combination is why I tend to start with structure and decisions
+            rather than with visuals.
           </p>
           <p className="mt-5 measure text-mist">
             The websites I build are meant to be lived with. Straightforward to

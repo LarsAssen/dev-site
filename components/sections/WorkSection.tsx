@@ -2,7 +2,9 @@ import { ArrowRight, Button } from '@/components/ui/Button'
 import { Section } from '@/components/ui/Section'
 import { ElevationLine, SectionHeading } from '@/components/ui/brand'
 import { ProjectGrid } from '@/components/work/ProjectCard'
+import { completePackage } from '@/content/offer'
 import { featuredProjects, projects } from '@/content/projects'
+import { formatPrice, site } from '@/content/site'
 
 /**
  * The work section.
@@ -64,20 +66,21 @@ export function EarlyClientPanel() {
       <div className="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:items-center">
         <div>
           <h3 className="text-2xl sm:text-3xl">
-            Interested in becoming an early client?
+            Interested in becoming a founding client?
           </h3>
           <p className="mt-4 measure text-linen/85">
-            Founding client projects are priced lower while I build this
-            portfolio. In return, I ask to show the finished website here as an
-            example. That is the whole arrangement — the work itself gets the
-            same attention either way.
+            Founding-client projects are offered at{' '}
+            {formatPrice(site.pricing.foundingClientPrice)} while I refine the
+            delivery process and build the first collection of completed
+            projects for this focused service. The scope, process and
+            professional standard remain the same.
           </p>
           <ul className="mt-7 space-y-2.5 text-linen/85">
             {[
-              'A lower project price while the first work is being built',
+              `The ${completePackage.name} at ${formatPrice(site.pricing.foundingClientPrice)} rather than the ${formatPrice(site.pricing.standardPackagePrice)} standard price`,
               'The same scope, process and standard as any later project',
               'Direct access to me throughout, with no account management layer',
-              'No obligation to provide a quote or testimonial afterwards',
+              'Where a completed project is suitable for a case study, permission to publish it is agreed separately — a testimonial is never required',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3">
                 <span
@@ -89,7 +92,7 @@ export function EarlyClientPanel() {
             ))}
           </ul>
           <Button href="/contact/" variant="onDark" size="lg" className="mt-8">
-            Become an early client
+            Discuss your website
             <ArrowRight />
           </Button>
         </div>

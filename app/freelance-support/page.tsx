@@ -62,7 +62,7 @@ function Hero() {
       breadcrumb="Freelance support"
       eyebrow="For agencies, designers & small teams"
       title="Flexible website development support for agencies and small teams."
-      lead="Available for selected project-based, subcontract and part-time website engagements."
+      lead="Available for selected project-based, subcontract and part-time website engagements, backed by a professional software-development background."
       tone="dusk"
     >
       <div className="mt-8">
@@ -75,8 +75,8 @@ function Hero() {
       <DashedDivider tone="dark" className="mt-12" />
 
       <p className="mt-6 measure text-sm text-mist">
-        Running a small business and looking for a website of your own? That is
-        my main service and it lives{' '}
+        Running a service business and looking for a website of your own? That
+        is my main service and it lives{' '}
         <Link
           href="/website-builds/"
           className="text-dawn-bright underline underline-offset-4 transition-colors duration-200 hover:text-linen"
@@ -151,7 +151,7 @@ function ScopeSection() {
           id="scope-title"
           eyebrow="What I do not take on"
           title="My best work comes from clearly scoped delivery."
-          lead="I am not currently taking on e-commerce operations, general IT support or open-ended maintenance roles. Saying so up front saves us both a conversation."
+          lead="I am not currently taking on e-commerce operations, general IT support or open-ended agency maintenance roles. Saying so up front saves us both a conversation."
         />
 
         <div className="self-center rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-9">
@@ -217,8 +217,8 @@ function BackToMainOffer() {
         <div>
           <Eyebrow tone="dark">Main service</Eyebrow>
           <p className="mt-2 max-w-[42ch] text-lg text-linen">
-            Complete website design and build projects for small service
-            businesses are the main body of my work.
+            The Complete Website Package — design and build projects for
+            established service businesses — is the main body of my work.
           </p>
         </div>
         <Button href="/website-builds/" variant="onDarkGhost" className="shrink-0">

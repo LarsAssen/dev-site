@@ -2,7 +2,7 @@
   "name": "lars-assen-web",
   "version": "1.0.0",
   "private": true,
-  "description": "Website design and development for small service businesses — Lars Assen, Wellington region, New Zealand.",
+  "description": "Website design and development for established service businesses — Lars Assen, Wellington region, New Zealand.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

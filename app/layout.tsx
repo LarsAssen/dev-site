@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: `%s — ${site.name}`,
   },
   description:
-    'I design and build clear, modern websites for small service businesses and independent professionals in New Zealand and further afield.',
+    'Clear, professional website design and development for established service businesses and independent professionals. Based in the Wellington region and available across New Zealand.',
   applicationName: site.name,
   authors: [{ name: site.name }],
   creator: site.name,
@@ -61,13 +61,13 @@ export const metadata: Metadata = {
     url: site.url,
     title: `${site.name} — Websites for service businesses`,
     description:
-      'Clear, modern websites for service businesses that need to look professional and make it easier for customers to get in touch.',
+      'Clear, professional websites for established service businesses that need to look credible and make it easier for customers to get in touch.',
   },
   twitter: {
     card: 'summary_large_image',
     title: `${site.name} — Websites for service businesses`,
     description:
-      'Clear, modern websites for service businesses that need to look professional and make it easier for customers to get in touch.',
+      'Clear, professional websites for established service businesses that need to look credible and make it easier for customers to get in touch.',
   },
   robots: {
     index: true,

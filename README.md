@@ -1,8 +1,14 @@
 # Lars Assen — website
 
-Marketing site for a website design and development service aimed at small
+Marketing site for a website design and development service aimed at established
 service businesses and independent professionals, with a secondary freelance /
 subcontract offer for agencies and small teams.
+
+The single offer is the **Complete Website Package**. Health, fitness and
+wellness businesses in the Wellington region are a current prospecting focus,
+but the public positioning is deliberately broader than that — see
+`currentFocus` in `content/audience.ts`, which is always rendered as a
+supporting line rather than as a headline.
 
 Built with Next.js (App Router), TypeScript and Tailwind CSS v4. It compiles to
 a fully static site, so it can be hosted anywhere.
@@ -98,8 +104,7 @@ Search the project for `[` to find them all.
 2. **`content/site.ts` → `formEndpoint`** — see *Connecting the forms* below.
 3. **`app/privacy/page.tsx`** — name your host and analytics tool, and set the
    review date. Check it against the Privacy Act 2020.
-4. **`content/faqs.ts`** — payment terms, and your freelance rates.
-5. **`app/opengraph-image.tsx`** — the social-sharing card. Fine as-is, but
+4. **`app/opengraph-image.tsx`** — the social-sharing card. Fine as-is, but
    worth swapping for a real image once you have one.
 
 ### Connecting the forms
@@ -126,14 +131,23 @@ Almost all copy lives in `content/`, separate from the components:
 | --- | --- |
 | `site.ts` | Contact details, pricing, links, form endpoint |
 | `navigation.ts` | Menu items and the primary/secondary calls to action |
-| `offer.ts` | Package inclusions, exclusions, process, timeline, problems |
-| `audience.ts` | Client types, fit criteria, freelance services and exclusions |
+| `offer.ts` | Package inclusions, exclusions, process, timeline, revisions, payment, care plan, developer-led points |
+| `audience.ts` | Positioning, current focus, client types, fit criteria, freelance services and exclusions |
 | `faqs.ts` | All FAQ questions and answers |
 | `projects.ts` | Portfolio projects (currently empty — see below) |
 
+All prices live in `content/site.ts` → `pricing`: `foundingClientPrice`,
+`standardPackagePrice` and `carePlanMonthly`. Components read them through
+`formatPrice()` and `currentPackagePrice()`, so a price change is one edit.
+
 Turning founding-client pricing off is one line: set
-`pricing.foundingClientPricing` to `false` in `content/site.ts`. The wording on
-the homepage and the Website Builds page changes to match.
+`pricing.foundingClientPricing` to `false` in `content/site.ts`. The homepage,
+the Website Builds page and the Service structured data all switch to the
+standard price.
+
+**One exception:** the FAQ answers in `content/faqs.ts` spell prices out as
+literal text, because those strings are also emitted as FAQPage structured
+data. If a price changes, update those answers by hand.
 
 ---
 

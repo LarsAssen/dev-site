@@ -1,6 +1,10 @@
 /* ==========================================================================
    FREQUENTLY ASKED QUESTIONS
    Direct answers. Where the honest answer is "no" or "it depends", it says so.
+
+   Prices are written out rather than interpolated, because these strings are
+   also emitted as FAQPage structured data. If the founding-client price or the
+   standard price changes in content/site.ts, update the answers here too.
    ========================================================================== */
 
 import type { FaqEntry } from '@/lib/schema'
@@ -9,17 +13,32 @@ export const generalFaqs: FaqEntry[] = [
   {
     question: 'Do I need all my content ready before we start?',
     answer:
-      'No. Most people do not have it ready, and waiting until you do is the main reason website projects stall. We work out the structure first, which tells you exactly what to write and how much. I will edit what you send for clarity and consistency, and I can point out the gaps as we go.',
+      'No. Most people do not have it ready, and waiting until you do is the main reason website projects stall. We work out the structure first, which tells you exactly what to write and how much. I will organise and lightly edit what you send, and I can point out the gaps as we go.',
   },
   {
-    question: 'How long does a website take?',
+    question: 'How long does the project take?',
     answer:
-      'Most projects take three to five weeks from the first conversation to launch. The build itself is rarely the slow part — waiting on content and feedback is. If your project looks likely to take longer, I will tell you before we start rather than partway through.',
+      'Most suitable projects take approximately three to five weeks. The timeline depends partly on how quickly the required content, account access, feedback and decisions are provided. The build itself is rarely the slow part. If your project looks likely to take longer, I will tell you before we start rather than partway through.',
   },
   {
     question: 'What is included in the package?',
     answer:
-      'Planning and site structure, approximately four to six core pages, responsive design and build, your content organised and lightly edited, an enquiry form, basic search-engine setup, analytics, domain connection, two rounds of revisions, launch support and a handover walkthrough. The full breakdown is on the Website Builds page.',
+      'An initial project discussion, a written project scope, website planning and page structure, up to six core pages, responsive desktop, tablet and mobile design, development, your content organised and lightly edited, clear calls to action, a contact or enquiry form, basic search-engine setup, analytics setup, domain connection, pre-launch testing, two structured revision rounds, launch support and basic handover guidance. The full breakdown is on the Website Builds page.',
+  },
+  {
+    question: 'How many pages do I get?',
+    answer:
+      'Up to six core pages. A typical set might be home, about, services, one or two individual service pages, frequently asked questions and contact, but the exact sitemap is agreed before work begins. Not every project needs six, and there is no advantage in padding one out to reach the number.',
+  },
+  {
+    question: 'How many revisions are included?',
+    answer:
+      'Two structured revision rounds are included. Each round should be provided as one consolidated list of feedback after reviewing the website. That covers things like replacing supplied images, adjusting wording, correcting information and reasonable layout refinements within the agreed design direction.',
+  },
+  {
+    question: 'Do you write the website content?',
+    answer:
+      'I organise and lightly edit the content you provide. Extensive copywriting from scratch is not automatically included, but it can be discussed and quoted separately.',
   },
   {
     question: 'Can you improve an existing website instead of replacing it?',
@@ -39,7 +58,17 @@ export const generalFaqs: FaqEntry[] = [
   {
     question: 'Do you provide ongoing support after launch?',
     answer:
-      'I include launch support and a handover walkthrough as standard, and I am happy to answer questions in the weeks after going live. I do not currently offer open-ended maintenance retainers or on-call support. If you want a periodic review or a batch of updates, we can agree that as a separate piece of work.',
+      'Yes. Launch support and basic handover guidance are included with every project. An optional Website Care Plan is also available for NZD $150 per month where the platform and hosting setup are suitable. It covers routine maintenance checks and up to 30 minutes of minor content changes each month. New pages, redesign work, major functionality and marketing are quoted separately.',
+  },
+  {
+    question: 'Do you only work with health and wellness businesses?',
+    answer:
+      'No. I work with established service businesses and independent professionals across several sectors. I am currently giving particular attention to health, fitness and wellness businesses, but I also consider other suitable projects.',
+  },
+  {
+    question: 'Do you work with businesses outside Wellington?',
+    answer:
+      'Yes. I am based in the Wellington region and work with clients across New Zealand, and remotely elsewhere. Almost everything happens over video calls, email and shared links, which suits most projects better than travel does. If you are local and would rather meet in person first, that is easy to arrange.',
   },
   {
     question: 'Do you build online stores?',
@@ -50,6 +79,11 @@ export const generalFaqs: FaqEntry[] = [
     question: 'Can you guarantee Google rankings?',
     answer:
       'No, and anyone who does is guessing. What I can do is build the site so search engines can read it properly: sensible page structure, real headings, fast loading, clear titles and descriptions, a sitemap and mobile-friendly pages. That is the groundwork. Rankings then depend on your market, your competition and time.',
+  },
+  {
+    question: 'Can you guarantee more enquiries or sales?',
+    answer:
+      'No. I will not promise a number of enquiries, leads or sales, because the website is one part of your wider business and marketing system. What a clear website does is make your services easier to understand and make getting in touch obvious. What happens after that depends on your offer, your pricing, your market and how you follow up.',
   },
   {
     question: 'What happens after launch?',
@@ -65,31 +99,36 @@ export const generalFaqs: FaqEntry[] = [
  */
 export const homepageFaqs: FaqEntry[] = [
   generalFaqs[0], // Do I need all my content ready?
-  generalFaqs[1], // How long does a website take?
-  generalFaqs[3], // Can you improve an existing website?
-  generalFaqs[5], // Are hosting and domain costs included?
+  generalFaqs[1], // How long does the project take?
+  generalFaqs[10], // Do you only work with health and wellness businesses?
+  generalFaqs[8], // Are hosting and domain costs included?
 ]
 
 export const pricingFaqs: FaqEntry[] = [
   {
-    question: 'Why is founding-client pricing lower?',
+    question: 'How much does a website cost?',
     answer:
-      'I am building the first collection of work for this focused service. Early projects are priced lower in exchange for being able to show the finished website as an example and, if you are happy with it, to talk about how the project went. That is the whole arrangement — there is no catch and no obligation to provide either.',
+      'The Complete Website Package is currently NZD $1,500 for the first three suitable founding-client projects. The standard package price after that will be NZD $2,500. Work outside the defined package is discussed and priced separately before it begins.',
   },
   {
-    question: 'What determines the final price?',
+    question: 'Why is the founding-client price lower?',
     answer:
-      'Mainly the number of pages, how much of the content already exists, and whether anything needs to connect to another system such as a booking tool. I give you a fixed price before we start, so the number you agree is the number you pay unless you ask for something outside the agreed scope.',
+      'I am offering the first three suitable projects at NZD $1,500 while I refine the delivery process and build the first collection of completed projects for this focused service. The full agreed package, process and professional standard still apply. The standard package price after the founding-client period will be NZD $2,500.',
   },
   {
-    question: 'How does payment work?',
+    question: 'How do payments work?',
     answer:
-      'A deposit to book the project in, and the balance on completion before the site goes live. Details are set out in writing before anything starts. [Payment terms and invoicing details]',
+      'A 50% initial payment is required before the project begins. The remaining 50% is due following final approval and before the website is launched.',
+  },
+  {
+    question: 'What happens if I need something outside the package?',
+    answer:
+      'Anything outside the agreed scope is discussed and priced before work begins. Where possible, additional work is quoted at a fixed price so you can decide whether to proceed before it is added.',
   },
   {
     question: 'What if I need more than six pages?',
     answer:
-      'That is fine — additional pages are quoted individually and added to the project price up front. Most small service businesses need fewer pages than they expect, and we will work that out during planning rather than guessing at the start.',
+      'That is fine — additional pages are quoted individually and agreed up front, so the project price stays fixed. Most service businesses need fewer pages than they expect, and we work that out during planning rather than guessing at the start.',
   },
 ]
 
@@ -112,6 +151,6 @@ export const freelanceFaqs: FaqEntry[] = [
   {
     question: 'What are your rates?',
     answer:
-      'Rates depend on the engagement type, duration and notice period. Send through the scope and the working arrangement you have in mind and I will come back with a rate or a fixed price. [Standard hourly and day rates]',
+      'Rates depend on the engagement type, scope, duration and notice period. Send through the brief and working arrangement you have in mind, and I will respond with an appropriate rate or fixed price.',
   },
 ]
