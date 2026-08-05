@@ -1,34 +1,38 @@
 /* ==========================================================================
    THE OFFER
    ---------------------------------------------------------------------------
-   The Website Launch Package: what it includes, what it costs, what it does
+   The Complete Website Package: what it includes, what it costs, what it does
    not cover, and how the work runs. Edit the copy here and every page that
    uses it stays in step.
+
+   Prices themselves live in content/site.ts, so there is one source of truth
+   for the founding-client price, the standard price and the care plan.
    ========================================================================== */
 
-export const launchPackage = {
-  name: 'Website Launch Package',
+export const completePackage = {
+  name: 'Complete Website Package',
   summary:
-    'A complete website, planned, designed, built and launched. One project, one price, a clear finish line.',
+    'A complete website planned, designed, built and launched. One defined project, one agreed scope and a clear finish line.',
 
   /** Grouped inclusions. Used on the Website Builds page. */
   inclusions: [
     {
       title: 'Planning and structure',
       items: [
-        'A working session to understand your business, your customers and what the website needs to do',
-        'A page-by-page site structure agreed before any design work starts',
+        'An initial project discussion to understand your business, your customers and what the website needs to do',
+        'A written project scope agreed before any design work starts',
+        'Website planning and a page-by-page structure',
         'Navigation and content order planned around the questions your customers actually ask',
-        'A clear enquiry path mapped from first visit through to getting in touch',
+        'Clear calls to action and an enquiry path mapped from first visit through to getting in touch',
       ],
     },
     {
       title: 'Design and build',
       items: [
-        'Approximately four to six core pages, designed and built',
-        'Responsive layouts checked on phones, tablets and desktop',
-        'Your content organised into a readable, logical order',
-        'Light copy editing for clarity, structure and consistency',
+        'Up to six core pages, designed and built',
+        'Responsive desktop, tablet and mobile design',
+        'Website development, with your content organised into a readable, logical order',
+        'Organisation and light editing of the content you supply, for clarity and consistency',
         'Accessible colour contrast, heading structure and keyboard navigation',
       ],
     },
@@ -37,34 +41,44 @@ export const launchPackage = {
       items: [
         'A contact or enquiry form that sends straight to your inbox',
         'Basic search-engine setup: page titles, descriptions and sitemap',
-        'Analytics installed so you can see what visitors do',
+        'Analytics setup so you can see what visitors do',
         'Social sharing previews configured for links shared online',
       ],
     },
     {
-      title: 'Launch and handover',
+      title: 'Review, launch and handover',
       items: [
-        'Domain connected and the site taken live',
-        'Two rounds of revisions included',
-        'Launch checks across browsers and devices',
-        'A handover walkthrough so you understand what you have',
-        'Written notes covering how to make the everyday changes yourself',
+        'Two structured revision rounds',
+        'Pre-launch testing across browsers and devices',
+        'Domain connection and the site taken live',
+        'Launch support on the day and immediately after',
+        'Basic handover guidance, including written notes on the everyday changes you are likely to want to make',
       ],
     },
   ],
 
   /** Flat version of the above, for the homepage summary. */
   highlights: [
-    'Website planning and structure',
-    'Approximately four to six core pages',
-    'Responsive design and build',
+    'Initial project discussion and written scope',
+    'Website planning and page structure',
+    'Up to six core pages',
+    'Responsive desktop, tablet and mobile design',
     'Content organised and lightly edited',
     'Contact or enquiry form',
-    'Basic search-engine setup',
-    'Analytics installed',
-    'Domain connected',
-    'Two rounds of revisions',
-    'Launch support and handover guidance',
+    'Basic search-engine setup and analytics',
+    'Domain connection and pre-launch testing',
+    'Two structured revision rounds',
+    'Launch support and basic handover guidance',
+  ],
+
+  /** Illustrative only — the exact sitemap is agreed during planning. */
+  typicalPages: [
+    'Home',
+    'About',
+    'Services',
+    'Individual service pages',
+    'Frequently asked questions',
+    'Contact',
   ],
 
   /** Priced separately, discussed before anything is agreed. */
@@ -75,20 +89,29 @@ export const launchPackage = {
     'Multi-location or service-area pages',
     'Basic logo and brand tidy-up for businesses without one',
     'Photography direction and sourcing guidance',
-    'Content writing beyond light editing',
-    'A second round of post-launch improvements',
+    'Content writing beyond organisation and light editing',
+    'A further round of post-launch improvements',
   ],
 
-  /** Stated plainly so there are no surprises later. */
+  /** Not automatically part of the package. Stated plainly, not buried. */
   exclusions: [
-    'Hosting, domain registration and any premium software or plugin licences',
-    'Paid stock photography, fonts or third-party integrations',
-    'Ongoing content updates unless we agree a separate arrangement',
-    'Online stores, payment processing and product catalogues',
-    'Booking systems that need custom back-end development',
-    'Ongoing marketing, advertising or social media management',
-    'General IT support, email hosting and device troubleshooting',
+    'Full branding or logo design',
+    'Professional photography',
+    'Extensive copywriting from scratch',
+    'E-commerce, product catalogues and payment processing',
+    'Custom applications and complex back-end systems',
+    'Complex booking systems',
+    'Membership platforms',
+    'Unlimited revisions',
+    'Marketing, advertising and social media management',
+    'SEO campaigns',
+    'Guaranteed search rankings',
+    'Guaranteed enquiries, leads or sales',
   ],
+
+  /** Third-party costs. Paid by the client, in the client's own name. */
+  thirdPartyCosts:
+    'Hosting, domain registration, premium software or plugin licences, paid stock photography and any paid integrations are paid separately by you, directly to the provider, unless something is explicitly included in writing. You own all of them outright.',
 
   /** What the project needs from you. Honest about the shared effort. */
   whatINeedFromYou: [
@@ -100,15 +123,95 @@ export const launchPackage = {
   ],
 } as const
 
+/** Payment structure. Stated in full rather than as a vague "deposit". */
+export const payment = {
+  headline: 'Half before the work starts, half before it goes live',
+  body: 'A 50% initial payment is required before the project begins. The remaining 50% is due following final approval and before the website is launched, transferred or made publicly available.',
+  steps: [
+    {
+      share: '50%',
+      label: 'Before the project begins',
+      body: 'Paid once the scope is agreed in writing. This books the project in and is what the planning week starts from.',
+    },
+    {
+      share: '50%',
+      label: 'After final approval, before launch',
+      body: 'Paid once you have reviewed the finished website and approved it, and before it is launched or transferred.',
+    },
+  ],
+} as const
+
+/** Revision policy. Explained calmly — this is not a contract page. */
+export const revisions = {
+  headline: 'Two structured revision rounds',
+  definition:
+    'A revision round is one consolidated list of feedback provided after reviewing the website. Sending it as one list rather than in fragments is what keeps the project moving and the price fixed.',
+  reasonable: [
+    'Replacing supplied images',
+    'Adjusting wording',
+    'Correcting information',
+    'Reasonable spacing or layout adjustments',
+    'Design refinements within the agreed direction',
+  ],
+  outside: [
+    'New pages or new functionality',
+    'Replacing the agreed design direction',
+    'Rewriting all the website copy',
+    'Major changes to the business or the offer',
+    'Anything outside the agreed scope',
+  ],
+} as const
+
+/** How work beyond the package is handled. No hourly rate is published. */
+export const outOfScope = {
+  headline: 'Work outside the package',
+  body: 'Work outside the agreed package is discussed and priced before it begins. Where possible, additional work is quoted at a fixed price, so you can decide whether to proceed before anything is added.',
+} as const
+
+/**
+ * The optional Website Care Plan. Deliberately secondary to the package — it
+ * appears in full on the Website Builds page and as a single line elsewhere.
+ */
+export const carePlan = {
+  eyebrow: 'Optional support after launch',
+  name: 'Website Care Plan',
+  intro:
+    'Keep your website maintained after launch without having to manage the routine technical work yourself. The exact maintenance responsibilities depend on the website platform and hosting arrangement.',
+  included: [
+    'Routine platform, theme or plugin updates where applicable',
+    'Backup checks',
+    'Basic security and uptime checks',
+    'Contact-form checks',
+    'Up to 30 minutes of minor content changes each month',
+    'Reasonable email support for website-related questions',
+  ],
+  notIncluded: [
+    'New pages',
+    'Redesign work',
+    'New functionality',
+    'Copywriting projects',
+    'SEO campaigns',
+    'Advertising or marketing',
+    'Large content changes',
+    'Hosting, domain and paid licence fees',
+    'Third-party tools or services unless explicitly agreed',
+  ],
+  note: 'Unused content-editing time does not roll over. Availability and exact responsibilities depend on the platform and hosting setup.',
+  cta: 'Ask about website care',
+} as const
+
 export const timeline = {
   headline: 'Most projects take three to five weeks',
-  body: 'That assumes content and feedback arrive at a steady pace. Projects that need photography, new copy or several decision-makers take longer, and I will say so before we start rather than partway through.',
+  body: 'Most suitable projects are completed within approximately three to five weeks. That assumes the required content, account access, feedback and decisions are provided without long delays. Projects that need photography, new copy or several decision-makers take longer, and I will say so before we start rather than partway through.',
   phases: [
-    { label: 'Discuss and plan', duration: 'Week 1' },
-    { label: 'Design and build', duration: 'Weeks 2 to 3' },
+    { label: 'Planning, structure and content organisation', duration: 'Week 1' },
+    { label: 'Design and development', duration: 'Weeks 2 to 3' },
     { label: 'Review and revisions', duration: 'Week 4' },
-    { label: 'Launch and handover', duration: 'Week 4 to 5' },
+    { label: 'Final checks, payment, launch and handover', duration: 'Weeks 4 to 5' },
   ],
+  /** Said plainly so nobody reads the table above as a promised launch date. */
+  caveat:
+    'I will not commit to an exact launch date before you have provided the content and access the build depends on. Once those are in, the date gets firm quickly.',
 } as const
 
 export const process = [
@@ -118,7 +221,7 @@ export const process = [
   },
   {
     title: 'Plan',
-    body: 'We agree the pages, the structure and the order the information should appear in. This is the step most websites skip, and it is why so many of them end up confusing.',
+    body: 'We agree the pages, the structure and the order the information should appear in, and I put the scope in writing. This is the step most websites skip, and it is why so many of them end up confusing.',
   },
   {
     title: 'Build',
@@ -126,11 +229,11 @@ export const process = [
   },
   {
     title: 'Review',
-    body: 'You go through it properly and send your notes. Two rounds of revisions are included, and I will tell you if a request will affect the scope before I act on it.',
+    body: 'You go through it properly and send your notes as one consolidated list. Two structured revision rounds are included, and I will tell you if a request falls outside the scope before I act on it.',
   },
   {
     title: 'Launch',
-    body: 'I connect your domain, run the final checks and take the site live. Then I walk you through what you have and how to keep it current.',
+    body: 'I run the pre-launch checks, connect your domain and take the site live. Then I walk you through what you have and how to keep it current.',
   },
 ] as const
 
@@ -183,3 +286,34 @@ export const websiteJobs = [
   'Why it can be trusted',
   'What to do next',
 ] as const
+
+/**
+ * The development background, used as a commercial point rather than a CV.
+ * Shown on the homepage and echoed more fully on the About page.
+ */
+export const developerLed = {
+  eyebrow: 'Developer-led from start to finish',
+  title: 'Design backed by real development experience.',
+  body: [
+    'I bring a professional software-development background to every website project. That means I understand both the visible website and the systems behind it, not only how to arrange content on a page.',
+    'I handle the planning, design, development, testing and launch directly. When something behaves unexpectedly, needs to connect properly or requires a technical decision, the person solving it is the same person responsible for the rest of the project.',
+  ],
+  points: [
+    {
+      title: 'Technical judgement',
+      body: 'I evaluate what the website actually needs, choose a sensible solution and avoid adding tools or complexity without a clear reason.',
+    },
+    {
+      title: 'Reliable implementation',
+      body: 'Responsive behaviour, forms, analytics, accessibility and launch details are treated as part of the build rather than afterthoughts.',
+    },
+    {
+      title: 'Maintainable structure',
+      body: 'The website should remain understandable, editable and sensible after it has been handed over.',
+    },
+    {
+      title: 'Direct problem-solving',
+      body: 'You are not passed from a salesperson to an account manager and then to an anonymous developer.',
+    },
+  ],
+} as const

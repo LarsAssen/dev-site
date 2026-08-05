@@ -29,9 +29,9 @@ export function SiteFooter() {
           <div>
             <Wordmark tone="dark" />
             <p className="mt-4 max-w-[34ch] text-sm text-mist">
-              {site.role} for small service businesses and independent
-              professionals. Based in the {site.location.region},{' '}
-              {site.location.country}, working with clients anywhere.
+              {site.role} for established service businesses and independent
+              professionals. Based in the {site.location.region}, working with
+              clients across {site.location.country} and remotely elsewhere.
             </p>
             <ThreeDotSignature className="mt-6" />
           </div>

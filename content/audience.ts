@@ -1,40 +1,63 @@
 /* ==========================================================================
    WHO THE SERVICE IS FOR
-   Kept deliberately narrow. A short, specific list is more convincing than a
-   long one that tries to cover every industry.
+   ---------------------------------------------------------------------------
+   The core positioning is broad: established service businesses and
+   independent professionals, across sectors. Health, fitness and wellness is
+   a current area of focus, not a restriction — see `currentFocus` below, which
+   is always shown as a supporting line rather than as the headline.
    ========================================================================== */
 
+/** The broad positioning statement. Used as the lead on both audience sections. */
+export const audiencePositioning =
+  'I work with established service businesses and independent professionals whose current website no longer represents the quality of the service they provide.'
+
+/** A current prospecting focus, stated without narrowing the offer. */
+export const currentFocus =
+  'I am currently giving particular attention to established health, fitness and wellness businesses in the Wellington region, while continuing to consider suitable service-business projects elsewhere.'
+
 export const clientTypes = [
+  {
+    label: 'Health and wellness professionals',
+    body: 'Therapists, nutrition professionals and clinics who need a calm, credible presence and a straightforward way to be contacted.',
+  },
+  {
+    label: 'Physiotherapists and allied health',
+    body: 'Practices whose visitors arrive with a specific problem and need to see quickly that it is something you treat.',
+  },
+  {
+    label: 'Personal trainers and fitness studios',
+    body: 'People whose enquiries currently come through social media and who want something they actually own.',
+  },
+  {
+    label: 'Massage, bodywork and movement studios',
+    body: 'Yoga, Pilates, massage and bodywork businesses where the treatments, the timetable and the first step all need to be obvious.',
+  },
   {
     label: 'Coaches and consultants',
     body: 'Independent practitioners who need to explain a service that is easy to describe in person and hard to describe on a page.',
   },
   {
-    label: 'Health and wellness professionals',
-    body: 'Therapists, practitioners and clinics who need a calm, credible presence and a straightforward way to be contacted.',
-  },
-  {
-    label: 'Personal trainers and instructors',
-    body: 'People whose enquiries currently come through social media and who want something they actually own.',
+    label: 'Professional-service firms',
+    body: 'Small teams whose current site was built quickly years ago and no longer reflects the standard of their work.',
   },
   {
     label: 'Tradespeople and local services',
     body: 'Businesses judged on trust and proximity, where a clear service list and an obvious phone number do most of the work.',
   },
   {
-    label: 'Creative professionals',
-    body: 'Photographers, makers and studios who need their work presented properly rather than compressed into a feed.',
+    label: 'Training and education providers',
+    body: 'Providers who need courses, dates, prerequisites and the enrolment step set out plainly rather than buried in a PDF.',
   },
   {
-    label: 'Small professional-service firms',
-    body: 'Small teams whose current site was built quickly years ago and no longer reflects the standard of their work.',
+    label: 'Creative and specialist independents',
+    body: 'Photographers, makers and studios who need their work presented properly rather than compressed into a feed.',
   },
 ] as const
 
 /** A short qualifying list. Being clear about fit saves everyone time. */
 export const goodFitWhen = [
-  'You run a service business and sell your time, expertise or craft rather than products',
-  'You need somewhere between four and six pages, not forty',
+  'You run an established service business and sell your time, expertise or craft rather than products',
+  'You need up to about six core pages, not forty',
   'You want one person handling the whole project rather than a team you never meet',
   'You can spare a few hours across the project for decisions and feedback',
   'You would rather have a clear, well-organised website than an elaborate one',

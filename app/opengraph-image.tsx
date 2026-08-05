@@ -10,7 +10,7 @@ export const dynamic = 'force-static'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const alt =
-  'Lars Assen — clear, modern websites for service businesses'
+  'Lars Assen — clear, professional websites for service businesses'
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -42,7 +42,7 @@ export default function OpengraphImage() {
               maxWidth: 900,
             }}
           >
-            Clear, modern websites for service businesses.
+            Clear, professional websites for service businesses.
           </div>
           <div
             style={{
@@ -53,8 +53,8 @@ export default function OpengraphImage() {
               maxWidth: 820,
             }}
           >
-            Website design and development for small service businesses and
-            independent professionals.
+            Website design and development for established service businesses
+            and independent professionals.
           </div>
         </div>
 

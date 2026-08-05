@@ -33,7 +33,17 @@ export const site = {
   /** Currency and pricing. Used on the homepage and Website Builds page. */
   pricing: {
     currency: 'NZD',
-    launchPackageFrom: 1500,
+    /** Complete Website Package, founding-client price. A fixed price for the
+     *  defined package, not a "from" figure. */
+    foundingClientPrice: 1500,
+    /** What the same package costs once the founding-client period ends. */
+    standardPackagePrice: 2500,
+    /** Optional Website Care Plan, per month. */
+    carePlanMonthly: 150,
+    /** How many founding-client projects are offered at the lower price.
+     *  Spelled out because it only ever appears mid-sentence — the brand's
+     *  mono numerals are for data rows and labels, not prose. */
+    foundingClientProjects: 'three',
     /** Set to false once founding-client pricing ends. The wording across the
      *  site changes with it — no other edits needed. */
     foundingClientPricing: true,
@@ -79,4 +89,14 @@ export function isPlaceholder(value: string): boolean {
 /** Formats a price as "NZD $1,500". */
 export function formatPrice(amount: number): string {
   return `${site.pricing.currency} $${amount.toLocaleString('en-NZ')}`
+}
+
+/**
+ * The price currently advertised for the Complete Website Package. Reads the
+ * founding-client flag so switching it off updates every page at once.
+ */
+export function currentPackagePrice(): number {
+  return site.pricing.foundingClientPricing
+    ? site.pricing.foundingClientPrice
+    : site.pricing.standardPackagePrice
 }

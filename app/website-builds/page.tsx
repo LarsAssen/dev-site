@@ -8,23 +8,42 @@ import { ProcessSection } from '@/components/sections/ProcessSection'
 import { ArrowRight, Button } from '@/components/ui/Button'
 import { Faq } from '@/components/ui/Faq'
 import { Section } from '@/components/ui/Section'
-import { DashedDivider, Pill, SectionHeading } from '@/components/ui/brand'
+import {
+  DashedDivider,
+  Eyebrow,
+  Pill,
+  SectionHeading,
+} from '@/components/ui/brand'
 import { CheckList, ExclusionList, RuleList } from '@/components/ui/lists'
-import { clientTypes, goodFitWhen, notAGoodFitWhen } from '@/content/audience'
+import {
+  audiencePositioning,
+  clientTypes,
+  currentFocus,
+  goodFitWhen,
+  notAGoodFitWhen,
+} from '@/content/audience'
 import { generalFaqs, pricingFaqs } from '@/content/faqs'
-import { launchPackage, problems, timeline } from '@/content/offer'
-import { formatPrice, site } from '@/content/site'
+import {
+  carePlan,
+  completePackage,
+  outOfScope,
+  payment,
+  problems,
+  revisions,
+  timeline,
+} from '@/content/offer'
+import { currentPackagePrice, formatPrice, site } from '@/content/site'
 import { breadcrumbSchema, faqSchema, serviceSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
-  title: 'Website builds',
+  title: 'Complete Website Package',
   description:
-    'The Website Launch Package: planning, design, build and launch of a complete website for a small service business. Full inclusions, timeline and pricing from NZD $1,500.',
+    'A complete website package for established service businesses, including planning, responsive design, development, two revision rounds, testing and launch.',
   alternates: { canonical: '/website-builds/' },
   openGraph: {
-    title: 'Website builds — Lars Assen',
+    title: 'Complete Website Package — Lars Assen',
     description:
-      'A professional website that makes your business easier to understand and contact. Full inclusions, timeline and transparent pricing.',
+      'A professional website that makes your business easier to understand and contact. Full inclusions, timeline, revisions and transparent pricing.',
     url: '/website-builds/',
   },
 }
@@ -42,7 +61,9 @@ export default function WebsiteBuildsPage() {
       <AdditionsAndExclusions />
       <ProcessSection tone="paper" />
       <TimelineSection />
+      <RevisionsAndPaymentSection />
       <PricingSection />
+      <CarePlanSection />
       <FaqSection />
       <EnquirySection />
       <FreelanceTeaser />
@@ -69,10 +90,10 @@ function Hero() {
   return (
     <PageHero
       breadcrumb="Website builds"
-      eyebrow={launchPackage.name}
+      eyebrow={completePackage.name}
       title="A professional website that makes your business easier to understand and contact."
       titleClassName="max-w-[19ch]"
-      lead="I plan, design and build clear service-business websites without the drawn-out process, unnecessary complexity or confusing technical language."
+      lead="I plan, design, build, test and launch clear service-business websites without the drawn-out process, unnecessary complexity or confusing technical language."
       showElevationLine
     >
       <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-7">
@@ -122,21 +143,29 @@ function PackageSection() {
       <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <SectionHeading
           id="package-title"
-          eyebrow={launchPackage.name}
-          title="One package, one price, a clear finish line."
+          eyebrow={completePackage.name}
+          title="One package, one agreed scope, a clear finish line."
           lead="Rather than an open-ended hourly arrangement, this is a defined piece of work with a written scope. You know what you are getting, what it costs and when it ends before anything starts."
         />
 
         <div className="flex flex-col justify-center rounded-sm bg-midnight p-7 text-linen sm:p-9">
           {site.pricing.foundingClientPricing ? (
-            <Pill className="self-start">Founding client pricing</Pill>
+            <Pill className="self-start">Founding-client price</Pill>
           ) : null}
           <p className="mt-6 font-display text-4xl leading-none">
-            From {formatPrice(site.pricing.launchPackageFrom)}
+            {formatPrice(currentPackagePrice())}
           </p>
           <p className="mt-4 text-sm text-mist">
-            Fixed price agreed in writing before work begins. Third-party costs
-            such as hosting and domain registration are separate.
+            {site.pricing.foundingClientPricing
+              ? `For the first ${site.pricing.foundingClientProjects} suitable projects. The standard package price afterwards will be ${formatPrice(
+                  site.pricing.standardPackagePrice,
+                )}.`
+              : 'A fixed price for the defined package, agreed in writing before work begins.'}
+          </p>
+          <p className="mt-3 text-sm text-mist">
+            50% before the project begins, 50% after final approval and before
+            launch. Third-party costs such as hosting and domain registration
+            are separate.
           </p>
           <Button
             href="#enquiry"
@@ -164,7 +193,7 @@ function InclusionsSection() {
       />
 
       <div className="mt-14 space-y-12">
-        {launchPackage.inclusions.map((group, index) => (
+        {completePackage.inclusions.map((group, index) => (
           <div key={group.title}>
             {index > 0 ? <DashedDivider className="mb-12" /> : null}
             <div className="grid gap-6 lg:grid-cols-[1fr_2fr] lg:gap-16">
@@ -175,13 +204,25 @@ function InclusionsSection() {
         ))}
       </div>
 
-      <div className="mt-16 rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-10">
-        <h3 className="eyebrow text-ember-deep">What I need from you</h3>
-        <p className="mt-3 measure text-ink-muted">
-          A website is a shared piece of work. This is the part that has to
-          come from your side, and it is less than most people expect.
-        </p>
-        <RuleList items={launchPackage.whatINeedFromYou} className="mt-6" />
+      <div className="mt-16 grid gap-8 lg:grid-cols-2">
+        <div className="rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-9">
+          <h3 className="eyebrow text-ember-deep">Pages a project might use</h3>
+          <p className="mt-3 measure text-ink-muted">
+            Up to six core pages are included. This is a typical set rather than
+            a fixed one — not every project needs six, and the exact sitemap is
+            agreed before work begins.
+          </p>
+          <RuleList items={completePackage.typicalPages} className="mt-6" />
+        </div>
+
+        <div className="rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-9">
+          <h3 className="eyebrow text-ember-deep">What I need from you</h3>
+          <p className="mt-3 measure text-ink-muted">
+            A website is a shared piece of work. This is the part that has to
+            come from your side, and it is less than most people expect.
+          </p>
+          <RuleList items={completePackage.whatINeedFromYou} className="mt-6" />
+        </div>
       </div>
     </Section>
   )
@@ -194,8 +235,8 @@ function SuitableClients() {
       <SectionHeading
         id="suitable-title"
         eyebrow="Who this is for"
-        title="Built for small service businesses, not for everyone."
-        lead="A narrow focus means I have thought about your situation before you describe it."
+        title="Built for established service businesses."
+        lead={audiencePositioning}
       />
 
       <div className="mt-12 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
@@ -206,6 +247,8 @@ function SuitableClients() {
           </div>
         ))}
       </div>
+
+      <p className="mt-10 measure text-sm text-ink-muted">{currentFocus}</p>
 
       <div className="mt-14 grid gap-8 lg:grid-cols-2">
         <div className="rounded-sm border border-hairline bg-paper p-7 sm:p-9">
@@ -231,7 +274,7 @@ function AdditionsAndExclusions() {
         id="scope-title"
         eyebrow="Scope"
         title="What sits outside the package."
-        lead="Some things are available as additions, others I do not take on at all. Both lists are here so you can rule the project in or out without a phone call."
+        lead="Some things are available as additions, others are separate pieces of work. Both lists are here so you can rule the project in or out without a phone call."
       />
 
       <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-16">
@@ -241,15 +284,31 @@ function AdditionsAndExclusions() {
             Quoted individually and agreed up front, so the project price stays
             fixed.
           </p>
-          <CheckList items={launchPackage.optionalAdditions} className="mt-6" />
+          <CheckList items={completePackage.optionalAdditions} className="mt-6" />
         </div>
 
         <div>
-          <h3 className="text-xl">Not included</h3>
+          <h3 className="text-xl">Not automatically included</h3>
           <p className="mt-2 measure text-ink-muted">
-            Stated plainly rather than buried in a proposal footnote.
+            Stated plainly rather than buried in a proposal footnote. Anything
+            here can still be discussed and quoted separately.
           </p>
-          <ExclusionList items={launchPackage.exclusions} className="mt-6" />
+          <ExclusionList items={completePackage.exclusions} className="mt-6" />
+        </div>
+      </div>
+
+      <div className="mt-12 grid gap-8 lg:grid-cols-2">
+        <div className="rounded-sm border border-hairline bg-paper-sunk/50 p-7">
+          <span aria-hidden="true" className="block h-px w-8 bg-ember" />
+          <h3 className="mt-4 text-lg">{outOfScope.headline}</h3>
+          <p className="mt-2 text-ink-muted">{outOfScope.body}</p>
+        </div>
+        <div className="rounded-sm border border-hairline bg-paper-sunk/50 p-7">
+          <span aria-hidden="true" className="block h-px w-8 bg-ember" />
+          <h3 className="mt-4 text-lg">Third-party costs</h3>
+          <p className="mt-2 text-ink-muted">
+            {completePackage.thirdPartyCosts}
+          </p>
         </div>
       </div>
     </Section>
@@ -287,6 +346,70 @@ function TimelineSection() {
             </li>
           ))}
         </ol>
+
+        <p className="measure text-sm text-mist lg:col-span-2">
+          {timeline.caveat}
+        </p>
+      </div>
+    </Section>
+  )
+}
+
+/* --------------------------------------------------------------------------
+   Revisions and payment sit together because they are the two questions that
+   decide whether the scope holds. Kept to two calm columns rather than a
+   contract-style list.
+   -------------------------------------------------------------------------- */
+function RevisionsAndPaymentSection() {
+  return (
+    <Section size="lg" id="revisions" aria-labelledby="revisions-title">
+      <div className="grid gap-14 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <SectionHeading
+            id="revisions-title"
+            eyebrow="Revisions"
+            title={revisions.headline}
+            as="h2"
+          />
+          <p className="mt-5 measure text-ink-muted">{revisions.definition}</p>
+
+          <div className="mt-8 grid gap-8 sm:grid-cols-2">
+            <div>
+              <h3 className="eyebrow text-ember-deep">
+                A revision round covers
+              </h3>
+              <CheckList items={revisions.reasonable} className="mt-5" />
+            </div>
+            <div>
+              <h3 className="eyebrow text-ink-muted">Handled separately</h3>
+              <ExclusionList items={revisions.outside} className="mt-5" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <SectionHeading
+            eyebrow="Payment"
+            title={payment.headline}
+            as="h2"
+          />
+          <p className="mt-5 measure text-ink-muted">{payment.body}</p>
+
+          <ol className="mt-8 space-y-5">
+            {payment.steps.map((step) => (
+              <li
+                key={step.label}
+                className="rounded-sm border border-hairline bg-paper-sunk/50 p-6"
+              >
+                <span className="font-mono text-sm font-medium tracking-[0.08em] text-ember-deep">
+                  {step.share}
+                </span>
+                <h3 className="mt-2 text-lg">{step.label}</h3>
+                <p className="mt-2 text-ink-muted">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </Section>
   )
@@ -294,36 +417,46 @@ function TimelineSection() {
 
 /* -------------------------------------------------------------------------- */
 function PricingSection() {
+  const founding = site.pricing.foundingClientPricing
+
   return (
-    <Section size="lg" id="pricing" aria-labelledby="pricing-title">
+    <Section tone="sunk" size="lg" id="pricing" aria-labelledby="pricing-title">
       <SectionHeading
         id="pricing-title"
         eyebrow="Pricing"
         title={
-          site.pricing.foundingClientPricing
-            ? 'Founding client pricing, while the first projects are being built.'
+          founding
+            ? `Founding-client price: ${formatPrice(site.pricing.foundingClientPrice)}`
             : 'Clear pricing, agreed before the work starts.'
         }
         lead={
-          site.pricing.foundingClientPricing
-            ? `Founding client projects currently start from ${formatPrice(
-                site.pricing.launchPackageFrom,
-              )}. This rate is available for a limited number of early projects while I develop the portfolio and refine the delivery process.`
-            : `Complete website projects start from ${formatPrice(
-                site.pricing.launchPackageFrom,
-              )}.`
+          founding
+            ? `For the first ${site.pricing.foundingClientProjects} suitable projects, I am offering the ${completePackage.name} at a reduced founding-client price. This lets me refine the delivery process and build the first collection of completed projects while still providing the full agreed package and a clear professional standard.`
+            : `The ${completePackage.name} is ${formatPrice(site.pricing.standardPackagePrice)}.`
         }
       />
 
       <div className="mt-12 grid gap-8 lg:grid-cols-3">
+        {founding ? (
+          <PriceNote
+            title={`Standard price afterwards: ${formatPrice(site.pricing.standardPackagePrice)}`}
+          >
+            Once the founding-client projects are taken, the same package is{' '}
+            {formatPrice(site.pricing.standardPackagePrice)}. The
+            founding-client price applies to projects that fit the defined
+            package and scope.
+          </PriceNote>
+        ) : (
+          <PriceNote title="What moves the price">
+            Mainly the number of pages, how much content already exists, and
+            whether anything needs to connect to another system. Additions are
+            quoted before they are started.
+          </PriceNote>
+        )}
         <PriceNote title="What the price covers">
-          The full package as listed above: planning, design, build, content
-          organisation, launch and handover, with two rounds of revisions.
-        </PriceNote>
-        <PriceNote title="What moves the price">
-          Mainly the number of pages, how much content already exists, and
-          whether anything needs to connect to another system. Additions are
-          quoted before they are started.
+          The full package as listed above: planning, written scope, design,
+          build, content organisation, testing, launch and handover, with two
+          structured revision rounds and up to six core pages.
         </PriceNote>
         <PriceNote title="What is billed separately">
           Hosting, domain registration, premium software or plugin licences,
@@ -340,6 +473,53 @@ function PricingSection() {
         <p className="text-sm text-ink-muted">
           A fixed price in writing before any work begins.
         </p>
+      </div>
+    </Section>
+  )
+}
+
+/* --------------------------------------------------------------------------
+   The care plan. Visible, but deliberately built as one bordered panel rather
+   than a full section treatment, so it never competes with the package above.
+   -------------------------------------------------------------------------- */
+function CarePlanSection() {
+  return (
+    <Section size="lg" id="care-plan" aria-labelledby="care-plan-title">
+      <div className="rounded-sm border border-hairline bg-paper-sunk/50 p-7 sm:p-10">
+        <Eyebrow>{carePlan.eyebrow}</Eyebrow>
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+          <h2 id="care-plan-title" className="text-2xl sm:text-3xl">
+            {carePlan.name}
+          </h2>
+          <p className="font-display text-2xl leading-none text-ink sm:shrink-0">
+            {formatPrice(site.pricing.carePlanMonthly)} per month
+          </p>
+        </div>
+
+        <p className="mt-5 measure text-ink-muted">{carePlan.intro}</p>
+
+        <div className="mt-9 grid gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <h3 className="eyebrow text-ember-deep">Included</h3>
+            <CheckList items={carePlan.included} className="mt-5" />
+          </div>
+          <div>
+            <h3 className="eyebrow text-ink-muted">Not included</h3>
+            <ExclusionList items={carePlan.notIncluded} className="mt-5" />
+          </div>
+        </div>
+
+        <DashedDivider className="my-8" />
+
+        <p className="measure text-sm text-ink-muted">{carePlan.note}</p>
+
+        <Link
+          href="/contact/"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ember-deep underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+        >
+          {carePlan.cta}
+          <ArrowRight />
+        </Link>
       </div>
     </Section>
   )

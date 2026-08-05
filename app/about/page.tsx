@@ -15,12 +15,12 @@ import { breadcrumbSchema } from '@/lib/schema'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'I am Lars, a website designer and developer based in the Wellington region. I build clear websites for service businesses and provide selected development support to agencies and small teams.',
+    'I am Lars, a website designer and software developer based in the Wellington region. I build clear, maintainable websites for established service businesses and provide selected development support to agencies and small teams.',
   alternates: { canonical: '/about/' },
   openGraph: {
     title: 'About — Lars Assen',
     description:
-      'Website designer and developer based in the Wellington region of New Zealand.',
+      'Website designer and software developer based in the Wellington region of New Zealand.',
     url: '/about/',
   },
 }
@@ -28,11 +28,7 @@ export const metadata: Metadata = {
 const background = [
   {
     title: 'Websites and digital platforms',
-    body: 'Building and maintaining websites, and working inside the platforms and tools that sit behind them. Enough exposure to know which problems are worth solving properly and which are not worth introducing in the first place.',
-  },
-  {
-    title: 'Online business',
-    body: 'Running things online rather than only building them. Knowing what it is like to depend on a website commercially changes the decisions you make when building one for someone else.',
+    body: 'Hands-on work building and maintaining websites, and working inside the platforms and tools that sit behind them. Enough exposure to know which problems are worth solving properly and which are not worth introducing in the first place.',
   },
   {
     title: 'Technical problem-solving',
@@ -47,8 +43,12 @@ const background = [
     body: 'Working with people across time zones, where clear written communication is not a nice extra but the only thing holding the work together.',
   },
   {
-    title: 'Modern development tools',
-    body: 'Current tooling, including AI where it removes genuine drudgery from routine tasks. It speeds up the boring parts. It does not make the structural decisions, and it is not what you are paying for.',
+    title: 'Direct communication',
+    body: 'One point of contact from the first conversation through to handover. Nothing is relayed through an account manager, and nothing gets lost between people who have never spoken to each other.',
+  },
+  {
+    title: 'Modern tools, used with judgement',
+    body: 'Current tooling, including AI where it removes genuine drudgery from routine tasks. It speeds up the boring parts. The planning, design decisions, development, testing and final quality are mine.',
   },
 ]
 
@@ -66,6 +66,7 @@ export default function AboutPage() {
   return (
     <>
       <Hero />
+      <DevelopmentBackgroundSection />
       <BackgroundSection />
       <ApproachSection />
       <ValuesSection />
@@ -94,12 +95,14 @@ function Hero() {
     <PageHero
       breadcrumb="About"
       eyebrow="About"
-      title="I am Lars, a website designer and developer."
+      title="I am Lars, a website designer and software developer."
+      titleClassName="max-w-[24ch]"
       lead={
         <>
           I am based in the {site.location.region} of {site.location.country}. I
-          build clear websites for service businesses, and provide selected
-          development support to agencies and small teams.
+          combine clear website design with a professional software-development
+          background to build reliable, maintainable websites for service
+          businesses.
         </>
       }
       showElevationLine
@@ -107,10 +110,50 @@ function Hero() {
   )
 }
 
+/* --------------------------------------------------------------------------
+   The development background gets its own section directly under the hero,
+   because it is the thing that distinguishes the service commercially. The
+   supporting points that go with it are on the homepage; this page explains
+   why it matters rather than repeating them.
+   -------------------------------------------------------------------------- */
+function DevelopmentBackgroundSection() {
+  return (
+    <Section size="lg" aria-labelledby="development-title">
+      <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
+        <SectionHeading
+          id="development-title"
+          eyebrow="Developer-led"
+          title="Professional software-development background."
+        />
+
+        <div className="space-y-5 text-lg">
+          <p className="measure text-ink">
+            My background includes professional software development and
+            hands-on work with websites and digital platforms. I understand the
+            code, systems and technical trade-offs behind the interface, not
+            only the visible design.
+          </p>
+          <p className="measure text-ink-muted">
+            That experience matters when a website needs to behave properly
+            across devices, connect forms and analytics, remain maintainable and
+            handle the unexpected issues that emerge during a real build.
+          </p>
+          <p className="measure text-ink-muted">
+            It also means the person you talk to is the person doing the work. I
+            handle the planning, design, development, testing and launch
+            directly, so a technical question does not have to travel through
+            anyone else to reach someone who can answer it.
+          </p>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
 /* -------------------------------------------------------------------------- */
 function BackgroundSection() {
   return (
-    <Section size="lg" aria-labelledby="background-title">
+    <Section tone="sunk" size="lg" aria-labelledby="background-title">
       <SectionHeading
         id="background-title"
         eyebrow="Background"
@@ -134,7 +177,7 @@ function BackgroundSection() {
 /* -------------------------------------------------------------------------- */
 function ApproachSection() {
   return (
-    <Section tone="sunk" size="lg" aria-labelledby="approach-title">
+    <Section size="lg" aria-labelledby="approach-title">
       <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
         <SectionHeading
           id="approach-title"
@@ -174,7 +217,7 @@ function ApproachSection() {
 /* -------------------------------------------------------------------------- */
 function ValuesSection() {
   return (
-    <Section size="lg" aria-labelledby="values-title">
+    <Section tone="sunk" size="lg" aria-labelledby="values-title">
       <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
         <SectionHeading
           id="values-title"

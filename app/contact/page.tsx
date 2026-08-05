@@ -81,8 +81,8 @@ export default function ContactPage() {
               )}
               {isPlaceholder(site.phone) ? null : <p>{site.phone}</p>}
               <p className="text-sm">
-                Based in the {site.location.region}, working with clients
-                anywhere.
+                Based in the {site.location.region}, working with clients across{' '}
+                {site.location.country} and remotely elsewhere.
               </p>
             </div>
 

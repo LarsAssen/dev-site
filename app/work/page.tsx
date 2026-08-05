@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Work — Lars Assen',
     description:
-      'Website projects for small service businesses. The first collection is currently being built.',
+      'Website projects for established service businesses. The first collection is currently being built.',
     url: '/work/',
   },
 }
@@ -119,16 +119,19 @@ export default function WorkPage() {
                 it will be labelled as one. Nothing unpaid will be presented as
                 client work.
               </Commitment>
-              <Commitment title="Real quotes only">
-                Any testimonial here will be a real quote from a real client who
-                agreed to it being published, with their name attached.
+              <Commitment title="Permission, not assumption">
+                Where a completed project is suitable for a case study,
+                permission to publish it is agreed separately. Any testimonial
+                will be a real quote from a real client who agreed to it being
+                published, with their name attached — and a testimonial is never
+                required.
               </Commitment>
             </div>
           </Section>
 
           <Section tone="sunk" size="lg" aria-labelledby="early-client-title">
             <h2 id="early-client-title" className="sr-only">
-              Become an early client
+              Become a founding client
             </h2>
             <EarlyClientPanel />
           </Section>

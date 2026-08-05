@@ -5,7 +5,8 @@
    no review counts and no award markup — those require real reviews to exist.
    ========================================================================== */
 
-import { formatPrice, isPlaceholder, site } from '@/content/site'
+import { completePackage } from '@/content/offer'
+import { currentPackagePrice, formatPrice, isPlaceholder, site } from '@/content/site'
 
 function absolute(path: string): string {
   return new URL(path, site.url).toString()
@@ -34,7 +35,7 @@ export function personSchema() {
     '@id': `${site.url}/#person`,
     name: site.name,
     url: `${site.url}/`,
-    jobTitle: 'Website designer and developer',
+    jobTitle: 'Website designer and software developer',
     ...(isPlaceholder(site.email) ? {} : { email: site.email }),
     ...(sameAs.length > 0 ? { sameAs } : {}),
     address: {
@@ -44,6 +45,7 @@ export function personSchema() {
     },
     knowsAbout: [
       'Website design',
+      'Software development',
       'Front-end development',
       'Responsive web design',
       'Website information architecture',
@@ -53,14 +55,16 @@ export function personSchema() {
 
 /** Describes the website-build service. Used on the Website Builds page. */
 export function serviceSchema() {
+  const price = currentPackagePrice()
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${site.url}/website-builds/#service`,
-    name: 'Website Launch Package',
+    name: completePackage.name,
     serviceType: 'Website design and development',
     description:
-      'Planning, design, build and launch of a complete website for a small service business or independent professional.',
+      'A complete website package for established service businesses and independent professionals: planning, written scope, responsive design, development, two structured revision rounds, testing and launch.',
     provider: { '@id': `${site.url}/#person` },
     areaServed: [
       { '@type': 'Country', name: 'New Zealand' },
@@ -69,20 +73,26 @@ export function serviceSchema() {
     audience: {
       '@type': 'Audience',
       audienceType:
-        'Small service businesses and independent professionals',
+        'Established service businesses and independent professionals',
     },
     offers: {
       '@type': 'Offer',
       priceCurrency: site.pricing.currency,
-      price: site.pricing.launchPackageFrom,
+      price,
       priceSpecification: {
         '@type': 'PriceSpecification',
         priceCurrency: site.pricing.currency,
-        minPrice: site.pricing.launchPackageFrom,
+        price,
         valueAddedTaxIncluded: false,
-        description: `Projects start from ${formatPrice(
-          site.pricing.launchPackageFrom,
-        )}. Third-party costs such as hosting, domain registration and paid software are billed separately.`,
+        description: site.pricing.foundingClientPricing
+          ? `Founding-client price of ${formatPrice(price)} for the first ${
+              site.pricing.foundingClientProjects
+            } suitable projects; ${formatPrice(
+              site.pricing.standardPackagePrice,
+            )} afterwards. Payable 50% before the project begins and 50% after final approval, before launch. Third-party costs such as hosting, domain registration and paid software are billed separately.`
+          : `${formatPrice(
+              price,
+            )} for the defined package. Payable 50% before the project begins and 50% after final approval, before launch. Third-party costs such as hosting, domain registration and paid software are billed separately.`,
       },
       availability: 'https://schema.org/LimitedAvailability',
     },
