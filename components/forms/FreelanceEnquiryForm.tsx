@@ -13,8 +13,8 @@ import {
 } from './fields'
 import { useEnquiryForm } from './useEnquiryForm'
 
-/** Identifies the form to the host's form handling. Keep it stable — changing
- *  it starts a new, empty submission list on Netlify. */
+/** Identifies which form a submission came from. Sent with the payload and
+ *  used in the email subject line, so the two forms are easy to tell apart. */
 const FORM_NAME = 'freelance-enquiry'
 
 const projectTypes = [
@@ -65,10 +65,6 @@ export function FreelanceEnquiryForm() {
       onSubmit={handleSubmit}
       noValidate
       className="space-y-10"
-      // See the note in ProjectEnquiryForm — Netlify picks these up at build
-      // time; they are inert everywhere else.
-      data-netlify="true"
-      data-netlify-honeypot="_gotcha"
     >
       <input type="hidden" name="form-name" value={FORM_NAME} />
       <HoneypotField />

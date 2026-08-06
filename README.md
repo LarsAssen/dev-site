@@ -79,10 +79,8 @@ SSL is issued automatically once DNS resolves. Usually under an hour, but
 Porkbun's TTL may make it longer — if Netlify still says "awaiting external DNS"
 after a couple of hours, re-check the records rather than re-adding the domain.
 
-**4. Switch the forms on.** In `content/site.ts`, change `formEndpoint` from the
-placeholder to `'/'`. Both forms already carry the markup Netlify's build-time
-detection looks for, so submissions appear under Forms in the dashboard. Add
-your email under Forms → Notifications. Send one test enquiry and confirm it
+**4. Switch the forms on.** See *Connecting the forms* below — it needs a
+Resend API key and two DNS records. Send one test enquiry and confirm it
 arrives before you start pointing people at the site.
 
 ### Deploying somewhere else instead
@@ -98,28 +96,59 @@ directory `out`. `public/_headers` covers Cloudflare, which does not read
 Everything below is a placeholder written as `[Something in square brackets]`.
 Search the project for `[` to find them all.
 
-1. **`content/site.ts`** — your email address, phone, LinkedIn. The domain is
-   set to `https://lars-assen.com`; if that ever changes, update it here, since
-   the canonical tags, sitemap and Open Graph URLs are all built from it.
-2. **`content/site.ts` → `formEndpoint`** — see *Connecting the forms* below.
-3. **`app/privacy/page.tsx`** — name your host and analytics tool, and set the
-   review date. Check it against the Privacy Act 2020.
+1. **`content/site.ts`** — phone and LinkedIn. The domain is set to
+   `https://lars-assen.com`; if that ever changes, update it here, since the
+   canonical tags, sitemap and Open Graph URLs are all built from it.
+2. **Enquiry email** — see *Connecting the forms* below. Needs a Resend key,
+   DNS records and a mailbox that can actually receive.
+3. **`app/privacy/page.tsx`** — name your host and set the review date. Check
+   it against the Privacy Act 2020.
 4. **`app/opengraph-image.tsx`** — the social-sharing card. Fine as-is, but
    worth swapping for a real image once you have one.
 
 ### Connecting the forms
 
-Both enquiry forms POST a urlencoded body to whatever is in
-`site.formEndpoint`.
+Both enquiry forms POST a urlencoded body to `site.formEndpoint`, which is
+`/api/enquiry` — proxied by `netlify.toml` to `netlify/functions/enquiry.ts`.
+That function emails the submission on with the headers set explicitly:
 
-- **On Netlify:** set it to `'/'`. Nothing else — the forms already carry
-  `data-netlify`, a `form-name` field and a honeypot, so Netlify registers them
-  at build time and collects submissions itself.
-- **Anywhere else:** paste an endpoint from Formspree, Basin, Web3Forms or
-  similar.
+| Header | Value |
+| --- | --- |
+| `To` | `websites@lars-assen.com` (override with `ENQUIRY_TO`) |
+| `From` | `Website Enquiry <websites@lars-assen.com>` (override with `ENQUIRY_FROM`) |
+| `Reply-To` | the visitor's own address, so replying answers them directly |
 
-Until you do either, the forms still validate properly and then tell the visitor
-to email you directly, rather than silently swallowing the message.
+A plain function rather than Netlify Forms, because Netlify's built-in form
+notifications send from a Netlify address and cannot set `From` or `Reply-To`.
+
+**Three things are needed before it delivers anything:**
+
+1. **A Resend API key.** Sign up at [resend.com](https://resend.com), create a
+   key, and add it in Netlify under Site configuration → Environment variables
+   as `RESEND_API_KEY`. See `.env.example`.
+2. **Domain verification, so Resend may send as `@lars-assen.com`.** Resend
+   will give you DKIM and SPF records to add at Porkbun. ⚠️ **Verify on a
+   subdomain** (Resend defaults to `send.lars-assen.com`) rather than the apex.
+   A domain may only have one SPF record, and the apex already carries
+   `v=spf1 include:beehiiv.com ~all` for the newsletter. Adding a second SPF
+   record at the apex breaks both. If you ever do need SPF on the apex, merge
+   the includes into that one existing record instead of adding another.
+3. **A mailbox that can receive at `@lars-assen.com`.** The domain currently
+   has **no `MX` record**, so nothing can be delivered to
+   `websites@lars-assen.com` or `hello@lars-assen.com` yet. Point `MX` at a
+   mail host (Fastmail, Google Workspace, Zoho, Migadu — whatever you prefer)
+   and create the two mailboxes or aliases. Sending is configured separately
+   from receiving; getting step 2 right does not give you an inbox.
+
+Until `RESEND_API_KEY` is set, the function returns 503 and both forms show
+"That did not send — please email me directly" rather than silently swallowing
+the message. If Resend rejects a send, the full submission is written to the
+Netlify function log, so an enquiry can still be recovered and answered.
+
+**To use a hosted form service instead**, set `formEndpoint` to a Formspree,
+Basin or Web3Forms endpoint. Nothing else in the project changes, though you
+lose control of the `From` header. Setting it back to a value in square
+brackets restores the "not connected yet" notice.
 
 ---
 

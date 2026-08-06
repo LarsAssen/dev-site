@@ -67,11 +67,17 @@ export default function PrivacyPage() {
               turn into projects are deleted periodically.
             </p>
             <p>
-              The form is delivered through a third-party form service, which
-              processes the submission on my behalf.{' '}
-              <span className="text-ember-deep">
-                [Form service name and privacy policy URL]
-              </span>
+              Submissions are passed straight to an email service, Resend,
+              which delivers them to my inbox on my behalf and does not retain
+              them for any other purpose. Their privacy policy is at{' '}
+              <a
+                href="https://resend.com/legal/privacy-policy"
+                rel="noopener"
+                className="text-ink underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+              >
+                resend.com/legal/privacy-policy
+              </a>
+              .
             </p>
           </Clause>
 

@@ -16,8 +16,15 @@ export const site = {
    *  or search engines will see the canonical tags pointing somewhere else. */
   url: 'https://lars-assen.com',
 
-  /** Appears in the footer, on the contact page and in structured data. */
-  email: 'juniorassen@hotmail.com',
+  /** The public contact address. Appears in the footer, on the contact page,
+   *  on the privacy page and in structured data. */
+  email: 'hello@lars-assen.com',
+
+  /** Where enquiry-form submissions are delivered. Not published anywhere on
+   *  the site — it is set on the function, and repeated here only so the two
+   *  cannot drift apart unnoticed. Change it in both places, or override it
+   *  with the ENQUIRY_TO environment variable on Netlify. */
+  enquiryEmail: 'websites@lars-assen.com',
 
   /** Optional. Leave as-is to hide the phone line from the contact page. */
   phone: '[Phone number, optional]',
@@ -58,19 +65,20 @@ export const site = {
 
   /** Where the enquiry forms POST.
    *
-   *  ON NETLIFY — set this to '/' and you are done. Both forms already carry
-   *  the markup Netlify's build-time form detection looks for, so submissions
-   *  land in Forms in the Netlify dashboard with no third-party signup.
+   *  This points at the site's own Netlify function (netlify/functions/
+   *  enquiry.ts), which emails the submission on with From and Reply-To set
+   *  explicitly. Netlify Forms' built-in notifications cannot set those
+   *  headers, which is why the function exists.
    *
-   *  ON ANY OTHER HOST — paste an endpoint from a form service that accepts a
-   *  urlencoded POST and returns 2xx: Formspree, Basin, Web3Forms, or similar.
+   *  The function needs RESEND_API_KEY set in the Netlify dashboard. Until it
+   *  is, the function returns 503 and the forms show their "that did not
+   *  send — email me directly" state rather than pretending to have worked.
    *
-   *  Either way it is this one line. Nothing else changes.
-   *
-   *  While this is still a placeholder the forms stay usable: they validate
-   *  normally and then tell the visitor to email you directly, rather than
-   *  silently failing. Leave it as-is until the site is actually deployed. */
-  formEndpoint: '[Form endpoint URL]',
+   *  TO USE A HOSTED FORM SERVICE INSTEAD — replace this with an endpoint that
+   *  accepts a urlencoded POST and returns 2xx (Formspree, Basin, Web3Forms).
+   *  Nothing else in the project changes. Setting it back to a value in square
+   *  brackets restores the "not connected yet" notice. */
+  formEndpoint: '/api/enquiry',
 
   /** Analytics. Left empty deliberately — no tracking script is loaded until
    *  you add one. If you do add one, the privacy page already describes it. */
