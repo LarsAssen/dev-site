@@ -12,18 +12,28 @@
    Netlify Forms' built-in notifications cannot set From or Reply-To, which is
    why this exists rather than the simpler `formEndpoint = '/'` route.
 
-   Sending goes through Resend. Swapping provider means changing `sendEmail()`
-   below and one environment variable — nothing else in the project knows which
-   service is used.
+   Sending goes out over SMTP through the site owner's own Google Workspace
+   mailbox, so no third-party email service sits in the middle and there is
+   only one account to manage. Swapping provider means changing the transport
+   below — nothing else in the project knows how mail is sent.
 
    ENVIRONMENT VARIABLES (set in Netlify → Site configuration → Environment)
-     RESEND_API_KEY  required. Without it the function returns 503 and the form
-                     shows its "email me directly" fallback rather than
-                     pretending the message was sent.
-     ENQUIRY_TO      optional, defaults to websites@lars-assen.com
-     ENQUIRY_FROM    optional, defaults to websites@lars-assen.com. Must be on
-                     a domain verified in Resend or delivery will fail.
+     SMTP_USER      required. The Google Workspace address that authenticates
+                    and that mail is sent as, e.g. websites@lars-assen.com
+     SMTP_PASSWORD  required. A Google App Password for that account — NOT the
+                    normal account password. Needs 2-Step Verification on.
+     SMTP_HOST      optional, defaults to smtp.gmail.com
+     SMTP_PORT      optional, defaults to 465 (implicit TLS)
+     ENQUIRY_TO     optional, defaults to websites@lars-assen.com
+     ENQUIRY_FROM   optional, defaults to SMTP_USER. Gmail will rewrite this to
+                    the authenticated account unless it is a verified alias, so
+                    leaving it unset is usually correct.
+
+   Without SMTP_USER / SMTP_PASSWORD the function returns 503 and the forms
+   show their "email me directly" fallback rather than pretending to have sent.
    ========================================================================== */
+
+import nodemailer from 'nodemailer'
 
 /* The two shapes this function needs from the Netlify runtime, declared here
    rather than pulled from @netlify/functions. That package brings in over 400
@@ -44,10 +54,9 @@ type HandlerResponse = {
 
 type Handler = (event: HandlerEvent) => Promise<HandlerResponse>
 
-const RESEND_ENDPOINT = 'https://api.resend.com/emails'
-
 const TO_ADDRESS = process.env.ENQUIRY_TO ?? 'websites@lars-assen.com'
-const FROM_ADDRESS = process.env.ENQUIRY_FROM ?? 'websites@lars-assen.com'
+const FROM_ADDRESS =
+  process.env.ENQUIRY_FROM ?? process.env.SMTP_USER ?? 'websites@lars-assen.com'
 const FROM_NAME = 'Website Enquiry'
 
 /** Guards against a runaway or malicious payload. Generous for a text form. */
@@ -157,6 +166,23 @@ function buildBodies(submission: Submission) {
   }
 }
 
+/** Built per invocation. Lambda reuses warm containers, so nodemailer's own
+ *  connection pooling would outlive the request and go stale; a fresh
+ *  single-shot transport is both simpler and more reliable here. */
+function createTransport() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST ?? 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT ?? 465),
+    // Port 465 is implicit TLS. Anything else (587) starts plain and upgrades
+    // via STARTTLS, which nodemailer does automatically when secure is false.
+    secure: Number(process.env.SMTP_PORT ?? 465) === 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD,
+    },
+  })
+}
+
 async function sendEmail(payload: {
   from: string
   to: string
@@ -165,26 +191,28 @@ async function sendEmail(payload: {
   text: string
   html: string
 }): Promise<{ ok: true } | { ok: false; status: number; detail: string }> {
-  const response = await fetch(RESEND_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  try {
+    await createTransport().sendMail({
       from: payload.from,
-      to: [payload.to],
+      to: payload.to,
       subject: payload.subject,
       text: payload.text,
       html: payload.html,
-      // Resend's field name. Omitted entirely when the visitor's address did
-      // not validate, rather than sent as an empty string.
-      ...(payload.replyTo ? { reply_to: payload.replyTo } : {}),
-    }),
-  })
-
-  if (response.ok) return { ok: true }
-  return { ok: false, status: response.status, detail: await response.text() }
+      // Omitted entirely when the visitor's address did not validate, rather
+      // than sent as an empty header.
+      ...(payload.replyTo ? { replyTo: payload.replyTo } : {}),
+    })
+    return { ok: true }
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+    // SMTP failures carry a numeric responseCode (535 bad credentials, 550
+    // rejected recipient, and so on). Surfaced so the log says why.
+    const status =
+      typeof (error as { responseCode?: number })?.responseCode === 'number'
+        ? (error as { responseCode: number }).responseCode
+        : 0
+    return { ok: false, status, detail }
+  }
 }
 
 export const handler: Handler = async (event) => {
@@ -209,8 +237,11 @@ export const handler: Handler = async (event) => {
     return json(200, { ok: true })
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    console.error('RESEND_API_KEY is not set — enquiry not sent:', submission.fields)
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.error(
+      'SMTP_USER / SMTP_PASSWORD are not set — enquiry not sent:',
+      submission.fields,
+    )
     return json(503, { error: 'Email is not configured' })
   }
 
@@ -243,7 +274,7 @@ export const handler: Handler = async (event) => {
       // Logged in full so a failed send can still be recovered and answered
       // from the Netlify function log rather than being lost silently.
       console.error(
-        `Resend rejected the enquiry (${result.status}): ${result.detail}`,
+        `SMTP rejected the enquiry (${result.status || 'no code'}): ${result.detail}`,
         submission.fields,
       )
       return json(502, { error: 'Email could not be sent' })
