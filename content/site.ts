@@ -70,11 +70,10 @@ export const site = {
    *  explicitly. Netlify Forms' built-in notifications cannot set those
    *  headers, which is why the function exists.
    *
-   *  The function sends over SMTP through the Google Workspace mailbox, and
-   *  needs SMTP_USER and SMTP_PASSWORD set in the Netlify dashboard. Until
-   *  they are, the function returns 503 and the forms show their "that did
-   *  not send — email me directly" state rather than pretending to have
-   *  worked.
+   *  The function sends through Resend, and needs RESEND_API_KEY set in the
+   *  Netlify dashboard. Until it is, the function returns 503 and the forms
+   *  show their "that did not send — email me directly" state rather than
+   *  pretending to have worked.
    *
    *  TO USE A HOSTED FORM SERVICE INSTEAD — replace this with an endpoint that
    *  accepts a urlencoded POST and returns 2xx (Formspree, Basin, Web3Forms).

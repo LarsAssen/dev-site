@@ -121,40 +121,51 @@ That function emails the submission on with the headers set explicitly:
 A plain function rather than Netlify Forms, because Netlify's built-in form
 notifications send from a Netlify address and cannot set `From` or `Reply-To`.
 
-Mail goes out over SMTP through the `websites@lars-assen.com` Google Workspace
-mailbox. No third-party email service sits in the middle, there is one account
-to manage rather than two, and `lars-assen.com` already has Google's `MX`
-records, so nothing about DNS needs to change.
+Mail goes out through Resend, not through the site owner's own Google
+Workspace mailbox.
 
-**Setup — two environment variables:**
+**Why not Workspace SMTP.** It was tried and does not work here.
+`websites@lars-assen.com` is an *alias* of the Workspace user
+`larssen@lars-assen.com`, and aliases cannot authenticate to SMTP, so the login
+has to be the real user. That makes the sender and the recipient the same
+Google account — and Gmail then deduplicates the message by `Message-ID`,
+filing it under **Sent** and never delivering it to the inbox. Sending from
+outside the Workspace makes an enquiry genuinely inbound mail, so it lands in
+the inbox like any other message.
 
-1. **Turn on 2-Step Verification** for `websites@lars-assen.com`, if it is not
-   already on. App Passwords are unavailable without it.
-2. **Generate an App Password** at
-   [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords),
-   signed in as `websites@lars-assen.com`. It is a 16-character string. This is
-   *not* the account's login password, and it can be revoked on its own without
-   touching the account.
-   *If the page refuses, a Workspace admin has App Passwords blocked for the
-   org — enable them in the Admin console under Security, or use Google's SMTP
-   relay service instead and point `SMTP_HOST` at `smtp-relay.gmail.com`.*
-3. **Add both values in Netlify** under Site configuration → Environment
-   variables: `SMTP_USER` = `websites@lars-assen.com`, `SMTP_PASSWORD` = the
-   App Password. See `.env.example` for the optional ones.
+**Setup:**
+
+1. **Create a Resend account** at [resend.com](https://resend.com) and add
+   `lars-assen.com` under Domains.
+2. **Add the DNS records Resend shows you**, at Porkbun. There are usually
+   three: a DKIM `TXT` on `resend._domainkey`, and an `MX` plus `TXT` on a
+   `send.` subdomain used for the Return-Path.
+   ⚠️ **Do not touch the existing apex `TXT` record**
+   `v=spf1 include:_spf.google.com ~all` — that is Google Workspace's SPF and
+   your incoming mail depends on it. Resend's SPF belongs on the `send.`
+   subdomain, so there is normally no conflict. If Resend ever asks for an SPF
+   record on the apex specifically, **merge its include into the existing
+   record** rather than adding a second one; a domain may only have one SPF
+   record and two will break both senders.
+3. **Create an API key** and add it in Netlify under Site configuration →
+   Environment variables as `RESEND_API_KEY`. See `.env.example`.
 
 Then redeploy and send one real test enquiry before pointing anyone at the site.
 
-Until `SMTP_USER` and `SMTP_PASSWORD` are set, the function returns 503 and
-both forms show "That did not send — please email me directly" rather than
-silently swallowing the message. If SMTP rejects a send, the full submission
-and the SMTP response code are written to the Netlify function log, so an
-enquiry can still be recovered and answered.
+Until `RESEND_API_KEY` is set, the function returns 503 and both forms show
+"That did not send — please email me directly" rather than silently swallowing
+the message. If a send fails, the function returns 502 with the failure code in
+the response body, and writes the full submission and the error to the Netlify
+function log so an enquiry can still be recovered and answered.
 
-**Note on `From`:** Gmail rewrites the `From` header to whichever account
-authenticated, unless the address is a verified "send mail as" alias on it.
-Since the function authenticates as `websites@lars-assen.com` and sends as the
-same address, this is already correct — but it is why `ENQUIRY_FROM` defaults
-to `SMTP_USER` rather than being set independently.
+**Reading a failure** — the `code` in the 502 response body says which:
+`401` the API key is wrong or missing; `403` the domain is not verified in
+Resend, or `ENQUIRY_FROM` is on a domain that is not; `422` the payload was
+rejected, usually a malformed address; `ETIMEDOUT` Netlify could not reach
+Resend inside the 8s budget.
+
+The domain has no `DMARC` record. Not required, but worth adding once the new
+sender is verified, since it improves deliverability for both senders.
 
 **To use a hosted form service instead**, set `formEndpoint` to a Formspree,
 Basin or Web3Forms endpoint. Nothing else in the project changes, though you
