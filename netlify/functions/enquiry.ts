@@ -12,28 +12,25 @@
    Netlify Forms' built-in notifications cannot set From or Reply-To, which is
    why this exists rather than the simpler `formEndpoint = '/'` route.
 
-   Sending goes out over SMTP through the site owner's own Google Workspace
-   mailbox, so no third-party email service sits in the middle and there is
-   only one account to manage. Swapping provider means changing the transport
-   below — nothing else in the project knows how mail is sent.
+   Sending goes through Resend rather than the site owner's own Google
+   Workspace mailbox. That is deliberate: websites@lars-assen.com is an alias
+   of the Workspace user, so sending through Workspace made the sender and the
+   recipient the same account. Gmail then deduplicated the message by
+   Message-ID and filed it only under Sent, never delivering it to the inbox.
+   Sending from outside the Workspace makes an enquiry genuinely inbound mail,
+   so it arrives in the inbox like any other message.
+
+   Swapping provider means changing `sendEmail()` below and one environment
+   variable — nothing else in the project knows how mail is sent.
 
    ENVIRONMENT VARIABLES (set in Netlify → Site configuration → Environment)
-     SMTP_USER      required. The Google Workspace address that authenticates
-                    and that mail is sent as, e.g. websites@lars-assen.com
-     SMTP_PASSWORD  required. A Google App Password for that account — NOT the
-                    normal account password. Needs 2-Step Verification on.
-     SMTP_HOST      optional, defaults to smtp.gmail.com
-     SMTP_PORT      optional, defaults to 465 (implicit TLS)
-     ENQUIRY_TO     optional, defaults to websites@lars-assen.com
-     ENQUIRY_FROM   optional, defaults to SMTP_USER. Gmail will rewrite this to
-                    the authenticated account unless it is a verified alias, so
-                    leaving it unset is usually correct.
-
-   Without SMTP_USER / SMTP_PASSWORD the function returns 503 and the forms
-   show their "email me directly" fallback rather than pretending to have sent.
+     RESEND_API_KEY  required. Without it the function returns 503 and the
+                     forms show their "email me directly" fallback rather than
+                     pretending the message was sent.
+     ENQUIRY_TO      optional, defaults to websites@lars-assen.com
+     ENQUIRY_FROM    optional, defaults to websites@lars-assen.com. Must be on
+                     a domain verified in Resend or sending is refused.
    ========================================================================== */
-
-import nodemailer from 'nodemailer'
 
 /* The two shapes this function needs from the Netlify runtime, declared here
    rather than pulled from @netlify/functions. That package brings in over 400
@@ -54,9 +51,10 @@ type HandlerResponse = {
 
 type Handler = (event: HandlerEvent) => Promise<HandlerResponse>
 
+const RESEND_ENDPOINT = 'https://api.resend.com/emails'
+
 const TO_ADDRESS = process.env.ENQUIRY_TO ?? 'websites@lars-assen.com'
-const FROM_ADDRESS =
-  process.env.ENQUIRY_FROM ?? process.env.SMTP_USER ?? 'websites@lars-assen.com'
+const FROM_ADDRESS = process.env.ENQUIRY_FROM ?? 'websites@lars-assen.com'
 const FROM_NAME = 'Website Enquiry'
 
 /** Guards against a runaway or malicious payload. Generous for a text form. */
@@ -166,35 +164,6 @@ function buildBodies(submission: Submission) {
   }
 }
 
-/** Built per invocation. Lambda reuses warm containers, so nodemailer's own
- *  connection pooling would outlive the request and go stale; a fresh
- *  single-shot transport is both simpler and more reliable here. */
-function createTransport() {
-  const port = Number(process.env.SMTP_PORT ?? 465)
-
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST ?? 'smtp.gmail.com',
-    port,
-    // Port 465 is implicit TLS. Anything else (587) starts plain and upgrades
-    // via STARTTLS, which nodemailer does automatically when secure is false.
-    secure: port === 465,
-    auth: {
-      user: process.env.SMTP_USER?.trim(),
-      // Google displays App Passwords as four groups of four ("abcd efgh ijkl
-      // mnop"). Pasting them with the spaces intact is the single most common
-      // reason SMTP auth fails with 535, because Gmail's own login box accepts
-      // the spaces but SMTP AUTH does not. Strip all whitespace.
-      pass: process.env.SMTP_PASSWORD?.replace(/\s+/g, ''),
-    },
-    // Netlify's synchronous functions are killed at 10s. Fail inside that
-    // budget with a real SMTP error rather than being cut off mid-handshake,
-    // which surfaces as an opaque platform 502 with nothing in the log.
-    connectionTimeout: 7000,
-    greetingTimeout: 5000,
-    socketTimeout: 7000,
-  })
-}
-
 async function sendEmail(payload: {
   from: string
   to: string
@@ -202,33 +171,43 @@ async function sendEmail(payload: {
   subject: string
   text: string
   html: string
-}): Promise<
-  | { ok: true }
-  | { ok: false; status: number; code?: string; detail: string }
-> {
+}): Promise<{ ok: true } | { ok: false; code: string; detail: string }> {
   try {
-    await createTransport().sendMail({
-      from: payload.from,
-      to: payload.to,
-      subject: payload.subject,
-      text: payload.text,
-      html: payload.html,
-      // Omitted entirely when the visitor's address did not validate, rather
-      // than sent as an empty header.
-      ...(payload.replyTo ? { replyTo: payload.replyTo } : {}),
+    const response = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY?.trim()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: payload.from,
+        to: [payload.to],
+        subject: payload.subject,
+        text: payload.text,
+        html: payload.html,
+        // Resend's field name. Omitted entirely when the visitor's address did
+        // not validate, rather than sent as an empty header.
+        ...(payload.replyTo ? { reply_to: payload.replyTo } : {}),
+      }),
+      // Netlify kills a synchronous function at 10s. Fail inside that budget
+      // with a real error rather than being cut off, which surfaces as an
+      // opaque platform 502 with nothing useful in the log.
+      signal: AbortSignal.timeout(8000),
     })
-    return { ok: true }
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error)
-    // SMTP failures carry a numeric responseCode (535 bad credentials, 550
-    // rejected recipient, and so on). Connection-level failures carry a string
-    // code instead (ETIMEDOUT, ECONNREFUSED, ESOCKET). Capture whichever is
-    // present so the cause is identifiable without the dashboard.
-    const err = error as { responseCode?: number; code?: string }
+
+    if (response.ok) return { ok: true }
     return {
       ok: false,
-      status: typeof err?.responseCode === 'number' ? err.responseCode : 0,
-      code: typeof err?.code === 'string' ? err.code : undefined,
+      code: String(response.status),
+      detail: await response.text(),
+    }
+  } catch (error) {
+    // Network-level failure or the 8s abort above.
+    const detail = error instanceof Error ? error.message : String(error)
+    const name = error instanceof Error ? error.name : 'Error'
+    return {
+      ok: false,
+      code: name === 'TimeoutError' ? 'ETIMEDOUT' : name,
       detail,
     }
   }
@@ -256,9 +235,9 @@ export const handler: Handler = async (event) => {
     return json(200, { ok: true })
   }
 
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+  if (!process.env.RESEND_API_KEY) {
     console.error(
-      'SMTP_USER / SMTP_PASSWORD are not set — enquiry not sent:',
+      'RESEND_API_KEY is not set — enquiry not sent:',
       submission.fields,
     )
     return json(503, { error: 'Email is not configured' })
@@ -293,16 +272,17 @@ export const handler: Handler = async (event) => {
       // Logged in full so a failed send can still be recovered and answered
       // from the Netlify function log rather than being lost silently.
       console.error(
-        `SMTP rejected the enquiry (${result.status || result.code || 'no code'}): ${result.detail}`,
+        `Sending the enquiry failed (${result.code}): ${result.detail}`,
         submission.fields,
       )
-      // The SMTP code goes back in the response as well as the log. It names
-      // the cause (535 = credentials, ETIMEDOUT = blocked egress) without
-      // revealing anything sensitive, so a failure can be diagnosed from the
-      // browser's network tab instead of needing the Netlify dashboard.
+      // The failure code goes back in the response as well as the log. It
+      // names the cause (401 = bad API key, 403 = domain not verified,
+      // ETIMEDOUT = blocked egress) without revealing anything sensitive, so a
+      // failure can be diagnosed from the browser's network tab rather than
+      // needing the Netlify dashboard.
       return json(502, {
         error: 'Email could not be sent',
-        smtp: result.status || result.code || 'unknown',
+        code: result.code,
       })
     }
 

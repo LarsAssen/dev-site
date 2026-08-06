@@ -67,10 +67,17 @@ export default function PrivacyPage() {
               turn into projects are deleted periodically.
             </p>
             <p>
-              There is no third-party form service in the middle. The
-              submission is emailed straight to my own mailbox, which is hosted
-              on Google Workspace. Google processes and stores that email in
-              the same way it handles any other message sent to me.
+              The submission is passed to an email service, Resend, which
+              delivers it to my inbox on my behalf and does not retain it for
+              any other purpose. Their privacy policy is at{' '}
+              <a
+                href="https://resend.com/legal/privacy-policy"
+                rel="noopener"
+                className="text-ink underline decoration-sand underline-offset-4 transition-colors duration-200 hover:decoration-ember-deep"
+              >
+                resend.com/legal/privacy-policy
+              </a>
+              . My mailbox itself is hosted on Google Workspace.
             </p>
           </Clause>
 
