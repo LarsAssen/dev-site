@@ -67,11 +67,10 @@ export default function PrivacyPage() {
               turn into projects are deleted periodically.
             </p>
             <p>
-              The form is delivered through a third-party form service, which
-              processes the submission on my behalf.{' '}
-              <span className="text-ember-deep">
-                [Form service name and privacy policy URL]
-              </span>
+              There is no third-party form service in the middle. The
+              submission is emailed straight to my own mailbox, which is hosted
+              on Google Workspace. Google processes and stores that email in
+              the same way it handles any other message sent to me.
             </p>
           </Clause>
 
