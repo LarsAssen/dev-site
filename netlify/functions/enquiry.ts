@@ -170,16 +170,28 @@ function buildBodies(submission: Submission) {
  *  connection pooling would outlive the request and go stale; a fresh
  *  single-shot transport is both simpler and more reliable here. */
 function createTransport() {
+  const port = Number(process.env.SMTP_PORT ?? 465)
+
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST ?? 'smtp.gmail.com',
-    port: Number(process.env.SMTP_PORT ?? 465),
+    port,
     // Port 465 is implicit TLS. Anything else (587) starts plain and upgrades
     // via STARTTLS, which nodemailer does automatically when secure is false.
-    secure: Number(process.env.SMTP_PORT ?? 465) === 465,
+    secure: port === 465,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
+      user: process.env.SMTP_USER?.trim(),
+      // Google displays App Passwords as four groups of four ("abcd efgh ijkl
+      // mnop"). Pasting them with the spaces intact is the single most common
+      // reason SMTP auth fails with 535, because Gmail's own login box accepts
+      // the spaces but SMTP AUTH does not. Strip all whitespace.
+      pass: process.env.SMTP_PASSWORD?.replace(/\s+/g, ''),
     },
+    // Netlify's synchronous functions are killed at 10s. Fail inside that
+    // budget with a real SMTP error rather than being cut off mid-handshake,
+    // which surfaces as an opaque platform 502 with nothing in the log.
+    connectionTimeout: 7000,
+    greetingTimeout: 5000,
+    socketTimeout: 7000,
   })
 }
 
@@ -190,7 +202,10 @@ async function sendEmail(payload: {
   subject: string
   text: string
   html: string
-}): Promise<{ ok: true } | { ok: false; status: number; detail: string }> {
+}): Promise<
+  | { ok: true }
+  | { ok: false; status: number; code?: string; detail: string }
+> {
   try {
     await createTransport().sendMail({
       from: payload.from,
@@ -206,12 +221,16 @@ async function sendEmail(payload: {
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error)
     // SMTP failures carry a numeric responseCode (535 bad credentials, 550
-    // rejected recipient, and so on). Surfaced so the log says why.
-    const status =
-      typeof (error as { responseCode?: number })?.responseCode === 'number'
-        ? (error as { responseCode: number }).responseCode
-        : 0
-    return { ok: false, status, detail }
+    // rejected recipient, and so on). Connection-level failures carry a string
+    // code instead (ETIMEDOUT, ECONNREFUSED, ESOCKET). Capture whichever is
+    // present so the cause is identifiable without the dashboard.
+    const err = error as { responseCode?: number; code?: string }
+    return {
+      ok: false,
+      status: typeof err?.responseCode === 'number' ? err.responseCode : 0,
+      code: typeof err?.code === 'string' ? err.code : undefined,
+      detail,
+    }
   }
 }
 
@@ -274,10 +293,17 @@ export const handler: Handler = async (event) => {
       // Logged in full so a failed send can still be recovered and answered
       // from the Netlify function log rather than being lost silently.
       console.error(
-        `SMTP rejected the enquiry (${result.status || 'no code'}): ${result.detail}`,
+        `SMTP rejected the enquiry (${result.status || result.code || 'no code'}): ${result.detail}`,
         submission.fields,
       )
-      return json(502, { error: 'Email could not be sent' })
+      // The SMTP code goes back in the response as well as the log. It names
+      // the cause (535 = credentials, ETIMEDOUT = blocked egress) without
+      // revealing anything sensitive, so a failure can be diagnosed from the
+      // browser's network tab instead of needing the Netlify dashboard.
+      return json(502, {
+        error: 'Email could not be sent',
+        smtp: result.status || result.code || 'unknown',
+      })
     }
 
     return json(200, { ok: true })
